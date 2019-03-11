@@ -6,7 +6,7 @@ import (
 	"github.com/zmb3/spotify"
 )
 
-func authenticator(URI string) (*spotify.Authenticator, error) {
+func Authenticator(URI string) (*spotify.Authenticator, error) {
 	if blank.Is(URI) {
 		return nil, errors.New("URI is blank")
 	}
@@ -17,7 +17,16 @@ func authenticator(URI string) (*spotify.Authenticator, error) {
 		spotify.ScopeUserReadPrivate,
 		spotify.ScopeUserTopRead,
 		spotify.ScopeUserReadRecentlyPlayed,
-		)
+	)
 
 	return &auth, nil
+}
+
+func New(c *spotify.Client) (*scryer, error) {
+	if c == nil {
+		return nil, errors.New("client pointer is nil")
+	}
+	s := &scryer{c: c}
+
+	return s, nil
 }
