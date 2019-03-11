@@ -31,3 +31,31 @@ func (sc *scryer) TopArtists() ([]artist, error) {
 
 	return art, nil
 }
+
+func (sc *scryer) TopTracks() ([]track, error) {
+	top, err := sc.c.CurrentUsersTopTracks()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch top tracks")
+	}
+
+	var trk []track
+	for _, t := range top.Tracks {
+		trk = append(trk, newTrack(t.SimpleTrack))
+	}
+
+	return trk, nil
+}
+
+func (sc *scryer) RecentTracks() ([]track, error) {
+	rec, err := sc.c.PlayerRecentlyPlayed()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch recently played tracks")
+	}
+
+	var trk []track
+	for _, r := range rec {
+		trk = append(trk, newTrack(r.Track))
+	}
+
+	return trk, nil
+}
