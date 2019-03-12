@@ -6,21 +6,22 @@ import (
 )
 
 const (
-	popTarget int = 40
-	popMax    int = 50
+	popTarget      int  = 40
+	popMax         int  = 50
+	publicPlaylist bool = true
 )
 
 type scryer struct {
 	c *spotify.Client
 }
 
-func (sc *scryer) CurrentUser() (string, error) {
+func (sc *scryer) CurrentUser() (*user, error) {
 	u, err := sc.c.CurrentUser()
 	if err != nil {
-		return "", err
+		return nil, errors.Wrap(err, "cannot fetch user")
 	}
 
-	return u.ID, nil
+	return parseUser(*u), nil
 }
 
 func (sc *scryer) TopArtists() ([]artist, error) {
@@ -70,22 +71,26 @@ func (sc *scryer) Recommendation(sdr Seeder) ([]track, error) {
 	return parseSimpleTracks(recs.Tracks...), nil
 }
 
-func spotifySeeds(sdr Seeder) (spotify.Seeds, error) {
-	sds := sdr.Seeds()
-	var spot spotify.Seeds
-
-	for _, sd := range sds {
-		switch sd.Category {
-		case trackSeed:
-			spot.Tracks = append(spot.Tracks, spotify.ID(sd.ID))
-		case artistSeed:
-			spot.Artists = append(spot.Artists, spotify.ID(sd.ID))
-		case genreSeed:
-			spot.Genres = append(spot.Genres, sd.Name)
-		default:
-			return spotify.Seeds{}, errors.New("unexpected seed category")
-		}
+func (sc *scryer) Playlist(name string, tracks []track) (*playlist, error) {
+	u, err := sc.CurrentUser()
+	if err != nil {
+		return nil, err
 	}
 
-	return spot, nil
+	pl, err := sc.c.CreatePlaylistForUser(u.id, name, "description", publicPlaylist)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot create playlist")
+	}
+
+	var IDs []spotify.ID
+	for _, t := range tracks {
+		IDs = append(IDs, spotify.ID(t.id))
+	}
+
+	_, err = sc.c.AddTracksToPlaylist(pl.ID, IDs...)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot add tracks to playlist")
+	}
+
+	return parsePlaylist(*pl), nil
 }
