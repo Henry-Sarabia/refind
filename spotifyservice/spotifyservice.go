@@ -31,7 +31,7 @@ func (sp *SpotifyService) CurrentUser() (scry.User, error) {
 		return scry.User{}, errors.Wrap(err, "cannot fetch user")
 	}
 
-	return scry.ParseUser(*u), nil
+	return ParseUser(*u), nil
 }
 
 func (sp *SpotifyService) TopArtists() ([]scry.Artist, error) {
@@ -40,7 +40,7 @@ func (sp *SpotifyService) TopArtists() ([]scry.Artist, error) {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
 	}
 
-	return scry.ParseArtists(top.Artists...), nil
+	return ParseArtists(top.Artists...), nil
 }
 
 func (sp *SpotifyService) TopTracks() ([]scry.Track, error) {
@@ -49,7 +49,7 @@ func (sp *SpotifyService) TopTracks() ([]scry.Track, error) {
 		return nil, errors.Wrap(err, "cannot fetch top tracks")
 	}
 
-	return scry.ParseFullTracks(top.Tracks...), nil
+	return ParseFullTracks(top.Tracks...), nil
 }
 
 func (sp *SpotifyService) RecentTracks() ([]scry.Track, error) {
@@ -60,14 +60,14 @@ func (sp *SpotifyService) RecentTracks() ([]scry.Track, error) {
 
 	var t []scry.Track
 	for _, r := range rec {
-		t = append(t, scry.ParseTrack(r.Track))
+		t = append(t, ParseTrack(r.Track))
 	}
 
 	return t, nil
 }
 
 func (sp *SpotifyService) Recommendation(sdr scry.Seeder) ([]scry.Track, error) {
-	sds, err := scry.SpotifySeeds(sdr)
+	sds, err := SpotifySeeds(sdr)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create seeds from seeder")
 	}
@@ -78,7 +78,7 @@ func (sp *SpotifyService) Recommendation(sdr scry.Seeder) ([]scry.Track, error) 
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
-	return scry.ParseSimpleTracks(recs.Tracks...), nil
+	return ParseSimpleTracks(recs.Tracks...), nil
 }
 
 func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (scry.Playlist, error) {
@@ -102,5 +102,5 @@ func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (scry.Playl
 		return scry.Playlist{}, errors.Wrap(err, "cannot add tracks to playlist")
 	}
 
-	return scry.ParsePlaylist(*pl), nil
+	return ParsePlaylist(*pl), nil
 }
