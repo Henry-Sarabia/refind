@@ -6,10 +6,10 @@ import (
 )
 
 type Seeder interface {
-	Seeds() []seed
+	Seeds() []Seed
 }
 
-type seed struct {
+type Seed struct {
 	Category seedCategory
 	ID       string
 	Name     string
@@ -23,7 +23,7 @@ const (
 	genreSeed
 )
 
-func spotifySeeds(sdr Seeder) (spotify.Seeds, error) {
+func SpotifySeeds(sdr Seeder) (spotify.Seeds, error) {
 	sds := sdr.Seeds()
 	var spot spotify.Seeds
 
@@ -36,7 +36,7 @@ func spotifySeeds(sdr Seeder) (spotify.Seeds, error) {
 		case genreSeed:
 			spot.Genres = append(spot.Genres, sd.Name)
 		default:
-			return spotify.Seeds{}, errors.New("unexpected seed category")
+			return spotify.Seeds{}, errors.New("unexpected Seed category")
 		}
 	}
 

@@ -6,6 +6,15 @@ import (
 	"github.com/zmb3/spotify"
 )
 
+type MusicService interface {
+	CurrentUser() (User, error)
+	TopArtists() ([]Artist, error)
+	TopTracks() ([]Track, error)
+	RecentTracks() ([]Track, error)
+	Recommendation(Seeder) ([]Track, error)
+	Playlist(string, []Track) (Playlist, error)
+}
+
 func Authenticator(URI string) (*spotify.Authenticator, error) {
 	if blank.Is(URI) {
 		return nil, errors.New("URI is blank")
@@ -22,11 +31,10 @@ func Authenticator(URI string) (*spotify.Authenticator, error) {
 	return &auth, nil
 }
 
-func New(c *spotify.Client) (*scryer, error) {
-	if c == nil {
-		return nil, errors.New("client pointer is nil")
-	}
-	s := &scryer{c: c}
+type Scryer struct {
+	MusicService
+}
 
-	return s, nil
+func New(ms MusicService) (*Scryer, error) {
+	return &Scryer{MusicService: ms}, nil
 }

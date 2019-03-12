@@ -7,12 +7,12 @@ import (
 
 func TestAuthenticator(t *testing.T) {
 	tests := []struct {
-		name string
-		uri string
+		name    string
+		uri     string
 		wantErr error
 	}{
 		{"Empty URI", "", errors.New("URI is blank")},
-		{"Non-empty URI", "some-uri", nil},
+		{"Non-empty URI", "some-URI", nil},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -23,4 +23,3 @@ func TestAuthenticator(t *testing.T) {
 		})
 	}
 }
-

@@ -2,23 +2,23 @@ package scry
 
 import "github.com/zmb3/spotify"
 
-type artist struct {
-	id   string
-	name string
+type Artist struct {
+	ID   string
+	Name string
 }
 
-func parseArtist(old spotify.SimpleArtist) artist {
-	return artist{
-		id:   string(old.ID),
-		name: old.Name,
+func ParseArtist(old spotify.SimpleArtist) Artist {
+	return Artist{
+		ID:   string(old.ID),
+		Name: old.Name,
 	}
 }
 
-func parseArtists(old ...spotify.FullArtist) []artist {
-	var a []artist
+func ParseArtists(old ...spotify.FullArtist) []Artist {
+	var a []Artist
 
 	for _, o := range old {
-		a = append(a, parseArtist(o.SimpleArtist))
+		a = append(a, ParseArtist(o.SimpleArtist))
 	}
 
 	return a

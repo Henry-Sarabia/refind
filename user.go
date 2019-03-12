@@ -2,10 +2,10 @@ package scry
 
 import "github.com/zmb3/spotify"
 
-type user struct {
-	id string
+type User struct {
+	ID string
 }
 
-func parseUser(old spotify.PrivateUser) user {
-	return user{id: old.ID}
+func ParseUser(old spotify.PrivateUser) User {
+	return User{ID: old.ID}
 }
