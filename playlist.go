@@ -7,8 +7,8 @@ type playlist struct {
 	uri string
 }
 
-func parsePlaylist(old spotify.FullPlaylist) *playlist {
-	return &playlist{
+func parsePlaylist(old spotify.FullPlaylist) playlist {
+	return playlist{
 		id:  string(old.ID),
 		uri: string(old.URI),
 	}

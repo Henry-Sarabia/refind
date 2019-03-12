@@ -15,10 +15,10 @@ type scryer struct {
 	c *spotify.Client
 }
 
-func (sc *scryer) CurrentUser() (*user, error) {
+func (sc *scryer) CurrentUser() (user, error) {
 	u, err := sc.c.CurrentUser()
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot fetch user")
+		return user{}, errors.Wrap(err, "cannot fetch user")
 	}
 
 	return parseUser(*u), nil
@@ -71,15 +71,15 @@ func (sc *scryer) Recommendation(sdr Seeder) ([]track, error) {
 	return parseSimpleTracks(recs.Tracks...), nil
 }
 
-func (sc *scryer) Playlist(name string, tracks []track) (*playlist, error) {
+func (sc *scryer) Playlist(name string, tracks []track) (playlist, error) {
 	u, err := sc.CurrentUser()
 	if err != nil {
-		return nil, err
+		return playlist{}, err
 	}
 
 	pl, err := sc.c.CreatePlaylistForUser(u.id, name, "description", publicPlaylist)
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot create playlist")
+		return playlist{}, errors.Wrap(err, "cannot create playlist")
 	}
 
 	var IDs []spotify.ID
@@ -89,7 +89,7 @@ func (sc *scryer) Playlist(name string, tracks []track) (*playlist, error) {
 
 	_, err = sc.c.AddTracksToPlaylist(pl.ID, IDs...)
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot add tracks to playlist")
+		return playlist{}, errors.Wrap(err, "cannot add tracks to playlist")
 	}
 
 	return parsePlaylist(*pl), nil
