@@ -8,10 +8,30 @@ type track struct {
 	artist artist
 }
 
-func newTrack(t spotify.SimpleTrack) track {
+func parseTrack(old spotify.SimpleTrack) track {
 	return track{
-		id:     string(t.ID),
-		name:   t.Name,
-		artist: newArtist(t.Artists[0]),
+		id:     string(old.ID),
+		name:   old.Name,
+		artist: parseArtist(old.Artists[0]),
 	}
+}
+
+func parseSimpleTracks(old ...spotify.SimpleTrack) []track {
+	var t []track
+
+	for _, o := range old {
+		t = append(t, parseTrack(o))
+	}
+
+	return t
+}
+
+func parseFullTracks(old ...spotify.FullTrack) []track {
+	var t []track
+
+	for _, o := range old {
+		t = append(t, parseTrack(o.SimpleTrack))
+	}
+
+	return t
 }
