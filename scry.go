@@ -5,7 +5,7 @@ type MusicService interface {
 	TopArtists() ([]Artist, error)
 	TopTracks() ([]Track, error)
 	RecentTracks() ([]Track, error)
-	Recommendation(Seeder) ([]Track, error)
+	Recommendations([]Seed) ([]Track, error)
 	Playlist(string, []Track) (Playlist, error)
 }
 

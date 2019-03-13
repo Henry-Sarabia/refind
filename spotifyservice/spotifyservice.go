@@ -66,19 +66,26 @@ func (sp *SpotifyService) RecentTracks() ([]scry.Track, error) {
 	return t, nil
 }
 
-func (sp *SpotifyService) Recommendation(sdr scry.Seeder) ([]scry.Track, error) {
-	sds, err := SpotifySeeds(sdr)
+func (sp *SpotifyService) Recommendations(seeds []scry.Seed) ([]scry.Track, error) {
+	sds, err := ParseSeeds(seeds)
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot create seeds from seeder")
+		return nil, err
 	}
 
+	var tracks []scry.Track
 	attr := spotify.NewTrackAttributes().TargetPopularity(popTarget).MaxPopularity(popMax)
-	recs, err := sp.c.GetRecommendations(sds, attr, nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot fetch recommendations")
+
+	for _, sd := range sds {
+		recs, err := sp.c.GetRecommendations(sd, attr, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "cannot fetch recommendations")
+		}
+
+		t := ParseSimpleTracks(recs.Tracks...)
+		tracks = append(tracks, t...)
 	}
 
-	return ParseSimpleTracks(recs.Tracks...), nil
+	return tracks, nil
 }
 
 func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (scry.Playlist, error) {
