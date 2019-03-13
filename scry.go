@@ -19,7 +19,7 @@ func New(ms MusicService) (*Scryer, error) {
 	return &Scryer{MusicService: ms}, nil
 }
 
-func (s *Scryer) FromTracks(t []Track) ([]Track, error) {
+func (s *Scryer) FromTracks() ([]Track, error) {
 	rec, err := s.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
