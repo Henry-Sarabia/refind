@@ -19,7 +19,7 @@ func New(ms MusicService) (*Scryer, error) {
 	return &Scryer{serv: ms}, nil
 }
 
-func (s *Scryer) FromTracks() ([]Track, error) {
+func (s *Scryer) FromTracks(name string) (*Playlist, error) {
 	rec, err := s.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
@@ -35,5 +35,10 @@ func (s *Scryer) FromTracks() ([]Track, error) {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
-	return recs, nil
+	pl, err := s.serv.Playlist(name, recs)
+	if err != nil {
+		return nil, errors.Wrapf(err, "cannot create playlist with name: %s", name)
+	}
+
+	return &pl, nil
 }
