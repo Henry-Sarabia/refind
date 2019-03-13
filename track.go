@@ -6,7 +6,6 @@ type Track struct {
 	Artist Artist
 }
 
-func (t Track) Seeds() Seed {
-
+func (t Track) Seed() Seed {
 	return Seed{Category: TrackSeed, ID: t.ID}
 }
