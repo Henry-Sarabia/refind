@@ -5,3 +5,7 @@ type Track struct {
 	Name   string
 	Artist Artist
 }
+
+func (t Track) Seed() Seed {
+	return Seed{Category: TrackSeed, ID: t.ID}
+}
