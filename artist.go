@@ -6,5 +6,5 @@ type Artist struct {
 }
 
 func (a Artist) Seed() Seed {
-	return Seed{Category: ArtistSeed, ID: a.Name}
+	return Seed{Category: ArtistSeed, ID: a.ID}
 }
