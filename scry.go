@@ -27,7 +27,11 @@ func (s *Scryer) FromTracks(name string) (*Playlist, error) {
 
 	var sds []Seed
 	for _, r := range rec {
-		sds = append(sds, r.Seed())
+		sd, err := r.Seed()
+		if err != nil {
+			return nil, errors.Wrap(err, "one or more tracks are invalid seeds")
+		}
+		sds = append(sds, sd)
 	}
 
 	recs, err := s.serv.Recommendations(sds)
@@ -51,7 +55,11 @@ func (s *Scryer) FromArtists(name string) (*Playlist, error) {
 
 	var sds []Seed
 	for _, t := range top {
-		sds = append(sds, t.Seed())
+		sd, err := t.Seed()
+		if err != nil {
+			return nil, errors.Wrap(err, "one or more artists are invalid seeds")
+		}
+		sds = append(sds, sd)
 	}
 
 	recs, err := s.serv.Recommendations(sds)
