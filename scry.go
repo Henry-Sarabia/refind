@@ -41,30 +41,30 @@ func FromTracks(serv MusicService, rec Recommender, name string) (*Playlist, err
 	return pl, nil
 }
 
-//func FromArtists(name string) (*Playlist, error) {
-//	top, err := s.serv.TopArtists()
-//	if err != nil {
-//		return nil, errors.Wrap(err, "cannot fetch top artists")
-//	}
-//
-//	var sds []Seed
-//	for _, t := range top {
-//		sd, err := t.Seed()
-//		if err != nil {
-//			return nil, errors.Wrap(err, "one or more artists are invalid seeds")
-//		}
-//		sds = append(sds, sd)
-//	}
-//
-//	recs, err := s.serv.Recommendations(sds)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "cannot fetch recommendations")
-//	}
-//
-//	pl, err := s.serv.Playlist(name, recs)
-//	if err != nil {
-//		return nil, errors.Wrapf(err, "cannot create playlist with name: %s", name)
-//	}
-//
-//	return &pl, nil
-//}
+func FromArtists(serv MusicService, rec Recommender, name string) (*Playlist, error) {
+	top, err := serv.TopArtists()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch top artists")
+	}
+
+	var sds []Seed
+	for _, t := range top {
+		sd, err := t.Seed()
+		if err != nil {
+			return nil, errors.Wrap(err, "one or more artists are invalid seeds")
+		}
+		sds = append(sds, sd)
+	}
+
+	recs, err := rec.Recommendations(sds)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch recommendations")
+	}
+
+	pl, err := serv.Playlist(name, recs)
+	if err != nil {
+		return nil, errors.Wrapf(err, "cannot create playlist with name: %s", name)
+	}
+
+	return pl, nil
+}
