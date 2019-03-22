@@ -25,13 +25,14 @@ func New(c *spotify.Client) (*SpotifyService, error) {
 	return s, nil
 }
 
-func (sp *SpotifyService) CurrentUser() (scry.User, error) {
+func (sp *SpotifyService) CurrentUser() (*scry.User, error) {
 	u, err := sp.c.CurrentUser()
 	if err != nil {
-		return scry.User{}, errors.Wrap(err, "cannot fetch user")
+		return nil, errors.Wrap(err, "cannot fetch user")
 	}
 
-	return ParseUser(*u), nil
+	p := ParseUser(*u)
+	return &p, nil
 }
 
 func (sp *SpotifyService) TopArtists() ([]scry.Artist, error) {
@@ -88,15 +89,15 @@ func (sp *SpotifyService) Recommendations(seeds []scry.Seed) ([]scry.Track, erro
 	return tracks, nil
 }
 
-func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (scry.Playlist, error) {
+func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (*scry.Playlist, error) {
 	u, err := sp.CurrentUser()
 	if err != nil {
-		return scry.Playlist{}, err
+		return nil, err
 	}
 
 	pl, err := sp.c.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
 	if err != nil {
-		return scry.Playlist{}, errors.Wrap(err, "cannot create playlist")
+		return nil, errors.Wrap(err, "cannot create playlist")
 	}
 
 	var IDs []spotify.ID
@@ -106,8 +107,9 @@ func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (scry.Playl
 
 	_, err = sp.c.AddTracksToPlaylist(pl.ID, IDs...)
 	if err != nil {
-		return scry.Playlist{}, errors.Wrap(err, "cannot add tracks to playlist")
+		return nil, errors.Wrap(err, "cannot add tracks to playlist")
 	}
 
-	return ParsePlaylist(*pl), nil
+	p := ParsePlaylist(*pl)
+	return &p, nil
 }
