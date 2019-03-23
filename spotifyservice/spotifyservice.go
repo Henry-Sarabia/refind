@@ -79,7 +79,7 @@ func (sp *SpotifyService) Recommendations(seeds []scry.Seed) ([]scry.Track, erro
 	return tracks, nil
 }
 
-func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (*scry.Playlist, error) {
+func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (*spotify.FullPlaylist, error) {
 	u, err := sp.c.CurrentUser()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch user")
@@ -100,6 +100,5 @@ func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (*scry.Play
 		return nil, errors.Wrap(err, "cannot add tracks to playlist")
 	}
 
-	p := ParsePlaylist(*pl)
-	return &p, nil
+	return pl, nil
 }
