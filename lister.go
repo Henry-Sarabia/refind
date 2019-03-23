@@ -37,10 +37,12 @@ func (l Lister) FromTracks(name string) ([]Track, error) {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
+
+
 	return recs, nil
 }
 
-func (l Lister) Filter(prev []Track, rmv map[string]Artist) []Track {
+func filter(prev []Track, rmv map[string]Artist) []Track {
 	var curr []Track
 	for _, p := range prev {
 		if _, ok := rmv[p.Artist.Name]; !ok {
