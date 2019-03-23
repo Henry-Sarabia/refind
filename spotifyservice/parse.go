@@ -56,7 +56,3 @@ func ParsePlaylist(old spotify.FullPlaylist) scry.Playlist {
 		URI: string(old.URI),
 	}
 }
-
-func ParseUser(old spotify.PrivateUser) scry.User {
-	return scry.User{ID: old.ID}
-}

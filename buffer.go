@@ -2,28 +2,12 @@ package scry
 
 type Buffer struct {
 	serv MusicService
-	user *User
 	artists []Artist
 	tracks []Track
 }
 
 func NewBuffer(ms MusicService) (*Buffer, error) {
 	return &Buffer{serv: ms}, nil
-}
-
-func (b Buffer) CurrentUser() (*User, error) {
-	var u *User
-	if b.user != nil {
-		u = b.user
-	}
-
-	var err error
-	u, err = b.serv.CurrentUser()
-	if err != nil {
-		return nil, err
-	}
-
-	return u, nil
 }
 
 func (b Buffer) TopArtists() ([]Artist, error) {
@@ -54,8 +38,4 @@ func (b Buffer) RecentTracks() ([]Track, error) {
 	}
 
 	return rec, nil
-}
-
-func (b Buffer) Playlist(name string, list []Track) (*Playlist, error) {
-	return b.serv.Playlist(name, list)
 }

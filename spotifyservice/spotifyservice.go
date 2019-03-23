@@ -25,16 +25,6 @@ func New(c *spotify.Client) (*SpotifyService, error) {
 	return s, nil
 }
 
-func (sp *SpotifyService) CurrentUser() (*scry.User, error) {
-	u, err := sp.c.CurrentUser()
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot fetch user")
-	}
-
-	p := ParseUser(*u)
-	return &p, nil
-}
-
 func (sp *SpotifyService) TopArtists() ([]scry.Artist, error) {
 	top, err := sp.c.CurrentUsersTopArtists()
 	if err != nil {
@@ -90,9 +80,9 @@ func (sp *SpotifyService) Recommendations(seeds []scry.Seed) ([]scry.Track, erro
 }
 
 func (sp *SpotifyService) Playlist(name string, tracks []scry.Track) (*scry.Playlist, error) {
-	u, err := sp.CurrentUser()
+	u, err := sp.c.CurrentUser()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "cannot fetch user")
 	}
 
 	pl, err := sp.c.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
