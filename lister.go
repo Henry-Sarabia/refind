@@ -2,9 +2,9 @@ package scry
 
 import "github.com/pkg/errors"
 
-type PopFilter struct {
+type Lister struct {
 	serv MusicService
-	rec Recommender
+	rec  Recommender
 }
 
 type MusicService interface {
@@ -17,8 +17,8 @@ type Recommender interface {
 	Recommendations([]Seed) ([]Track, error)
 }
 
-func (pf PopFilter) FromTracks(name string) ([]Track, error) {
-	tracks, err := pf.serv.RecentTracks()
+func (l Lister) FromTracks(name string) ([]Track, error) {
+	tracks, err := l.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
 	}
@@ -32,12 +32,51 @@ func (pf PopFilter) FromTracks(name string) ([]Track, error) {
 		sds = append(sds, sd)
 	}
 
-	recs, err := pf.rec.Recommendations(sds)
+	recs, err := l.rec.Recommendations(sds)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
-	return recs, nil
+	top, err := l.serv.TopArtists()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch top artists")
+	}
+
+	f := filter(recs, toMap(top))
+
+	return f, nil
+}
+
+func toMap(prev []Artist) map[string]Artist {
+	if len(prev) == 0 {
+		return nil
+	}
+
+	curr := make(map[string]Artist)
+	for _, p := range prev {
+		curr[p.Name] = p
+	}
+
+	return curr
+}
+
+func filter(prev []Track, rmv map[string]Artist) []Track {
+	if len(prev) == 0 {
+		return nil
+	}
+
+	if len(rmv) == 0 {
+		return prev
+	}
+
+	var curr []Track
+	for _, p := range prev {
+		if _, ok := rmv[p.Artist.Name]; !ok {
+			curr = append(curr, p)
+		}
+	}
+
+	return curr
 }
 
 //func FromArtists(serv MusicService, rec Recommender, name string) (*Playlist, error) {
