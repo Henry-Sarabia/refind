@@ -37,12 +37,38 @@ func (l Lister) FromTracks(name string) ([]Track, error) {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
+	top, err := l.serv.TopArtists()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch top artists")
+	}
 
+	f := filter(recs, toMap(top))
 
-	return recs, nil
+	return f, nil
+}
+
+func toMap(prev []Artist) map[string]Artist {
+	if len(prev) == 0 {
+		return nil
+	}
+
+	curr := make(map[string]Artist)
+	for _, p := range prev {
+		curr[p.Name] = p
+	}
+
+	return curr
 }
 
 func filter(prev []Track, rmv map[string]Artist) []Track {
+	if len(prev) == 0 {
+		return nil
+	}
+
+	if len(rmv) == 0 {
+		return prev
+	}
+
 	var curr []Track
 	for _, p := range prev {
 		if _, ok := rmv[p.Artist.Name]; !ok {
