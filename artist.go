@@ -1,4 +1,4 @@
-package scry
+package refind
 
 import (
 	"github.com/Henry-Sarabia/blank"

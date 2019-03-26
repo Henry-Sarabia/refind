@@ -1,4 +1,4 @@
-package scry
+package refind
 
 type Seed struct {
 	Category SeedCategory
