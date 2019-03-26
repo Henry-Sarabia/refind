@@ -2,7 +2,7 @@ package refind
 
 import "github.com/pkg/errors"
 
-type Generator struct {
+type generator struct {
 	serv MusicService
 	rec  Recommender
 }
@@ -16,7 +16,7 @@ type Recommender interface {
 	Recommendations([]Seed) ([]Track, error)
 }
 
-func (g Generator) Tracklist() ([]Track, error) {
+func (g generator) Tracklist() ([]Track, error) {
 	list, err := g.fromTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot generate tracklist from track data")
@@ -25,7 +25,7 @@ func (g Generator) Tracklist() ([]Track, error) {
 	return list, nil
 }
 
-func (g Generator) fromTracks() ([]Track, error) {
+func (g generator) fromTracks() ([]Track, error) {
 	tracks, err := g.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")

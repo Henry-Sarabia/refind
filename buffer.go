@@ -1,16 +1,16 @@
 package refind
 
-type Buffer struct {
+type buffer struct {
 	serv MusicService
 	artists []Artist
 	tracks []Track
 }
 
-func NewBuffer(serv MusicService) *Buffer {
-	return &Buffer{serv: serv}
+func newBuffer(serv MusicService) *buffer {
+	return &buffer{serv: serv}
 }
 
-func (b Buffer) TopArtists() ([]Artist, error) {
+func (b buffer) TopArtists() ([]Artist, error) {
 	var top []Artist
 	if b.artists != nil {
 		top = b.artists
@@ -25,7 +25,7 @@ func (b Buffer) TopArtists() ([]Artist, error) {
 	return top, nil
 }
 
-func (b Buffer) RecentTracks() ([]Track, error) {
+func (b buffer) RecentTracks() ([]Track, error) {
 	var rec []Track
 	if b.tracks != nil {
 		rec = b.tracks
