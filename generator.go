@@ -7,6 +7,10 @@ type generator struct {
 	rec  Recommender
 }
 
+func New(serv MusicService, rec Recommender) *generator {
+	return &generator{serv: newBuffer(serv), rec: rec}
+}
+
 type MusicService interface {
 	TopArtists() ([]Artist, error)
 	RecentTracks() ([]Track, error)
