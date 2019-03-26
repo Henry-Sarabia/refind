@@ -16,7 +16,16 @@ type Recommender interface {
 	Recommendations([]Seed) ([]Track, error)
 }
 
-func (g Generator) FromTracks(name string) ([]Track, error) {
+func (g Generator) Tracklist() ([]Track, error) {
+	list, err := g.fromTracks()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot generate tracklist from track data")
+	}
+
+	return list, nil
+}
+
+func (g Generator) fromTracks() ([]Track, error) {
 	tracks, err := g.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
