@@ -1,4 +1,4 @@
-package spotifyservice
+package spotify
 
 import (
 	"github.com/Henry-Sarabia/scry"
