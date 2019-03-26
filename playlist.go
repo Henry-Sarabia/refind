@@ -1,4 +1,4 @@
-package scry
+package refind
 
 type Playlist struct {
 	ID  string

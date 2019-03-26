@@ -1,7 +1,7 @@
 package spotify
 
 import (
-	"github.com/Henry-Sarabia/scry"
+	"github.com/Henry-Sarabia/refind"
 	"github.com/pkg/errors"
 	"github.com/zmb3/spotify"
 )
@@ -25,7 +25,7 @@ func New(c *spotify.Client) (*Service, error) {
 	return s, nil
 }
 
-func (s *Service) TopArtists() ([]scry.Artist, error) {
+func (s *Service) TopArtists() ([]refind.Artist, error) {
 	top, err := s.c.CurrentUsersTopArtists()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
@@ -34,7 +34,7 @@ func (s *Service) TopArtists() ([]scry.Artist, error) {
 	return ParseArtists(top.Artists...), nil
 }
 
-func (s *Service) TopTracks() ([]scry.Track, error) {
+func (s *Service) TopTracks() ([]refind.Track, error) {
 	top, err := s.c.CurrentUsersTopTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top tracks")
@@ -43,13 +43,13 @@ func (s *Service) TopTracks() ([]scry.Track, error) {
 	return ParseFullTracks(top.Tracks...), nil
 }
 
-func (s *Service) RecentTracks() ([]scry.Track, error) {
+func (s *Service) RecentTracks() ([]refind.Track, error) {
 	rec, err := s.c.PlayerRecentlyPlayed()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recently played tracks")
 	}
 
-	var t []scry.Track
+	var t []refind.Track
 	for _, r := range rec {
 		t = append(t, ParseTrack(r.Track))
 	}
@@ -57,13 +57,13 @@ func (s *Service) RecentTracks() ([]scry.Track, error) {
 	return t, nil
 }
 
-func (s *Service) Recommendations(seeds []scry.Seed) ([]scry.Track, error) {
+func (s *Service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 	sds, err := ParseSeeds(seeds)
 	if err != nil {
 		return nil, err
 	}
 
-	var tracks []scry.Track
+	var tracks []refind.Track
 	attr := spotify.NewTrackAttributes().TargetPopularity(popTarget).MaxPopularity(popMax)
 
 	for _, sd := range sds {
@@ -79,7 +79,7 @@ func (s *Service) Recommendations(seeds []scry.Seed) ([]scry.Track, error) {
 	return tracks, nil
 }
 
-func (s *Service) Playlist(name string, tracks []scry.Track) (*spotify.FullPlaylist, error) {
+func (s *Service) Playlist(name string, tracks []refind.Track) (*spotify.FullPlaylist, error) {
 	u, err := s.c.CurrentUser()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch user")

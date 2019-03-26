@@ -1,4 +1,4 @@
-package scry
+package refind
 
 import "github.com/pkg/errors"
 

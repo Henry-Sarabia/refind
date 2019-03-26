@@ -1,7 +1,7 @@
 package spotify
 
 import (
-	"github.com/Henry-Sarabia/scry"
+	"github.com/Henry-Sarabia/refind"
 	"github.com/pkg/errors"
 	"github.com/zmb3/spotify"
 )
@@ -10,7 +10,7 @@ type Seed struct {
 	spotify.Seeds
 }
 
-func ParseSeeds(old []scry.Seed) ([]spotify.Seeds, error) {
+func ParseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
 	var sds []spotify.Seeds
 
 	for len(old) > 0 {
@@ -28,7 +28,7 @@ func ParseSeeds(old []scry.Seed) ([]spotify.Seeds, error) {
 	return sds, nil
 }
 
-func parseMaxSeeds(old []scry.Seed) (spotify.Seeds, error) {
+func parseMaxSeeds(old []refind.Seed) (spotify.Seeds, error) {
 	var sd spotify.Seeds
 
 	for _, o := range old {
@@ -45,13 +45,13 @@ func parseMaxSeeds(old []scry.Seed) (spotify.Seeds, error) {
 	return sd, nil
 }
 
-func parseSeed(old scry.Seed, sd *spotify.Seeds) error {
+func parseSeed(old refind.Seed, sd *spotify.Seeds) error {
 	switch old.Category {
-	case scry.TrackSeed:
+	case refind.TrackSeed:
 		sd.Tracks = append(sd.Tracks, spotify.ID(old.ID))
-	case scry.ArtistSeed:
+	case refind.ArtistSeed:
 		sd.Artists = append(sd.Artists, spotify.ID(old.ID))
-	case scry.GenreSeed:
+	case refind.GenreSeed:
 		sd.Genres = append(sd.Genres, old.ID)
 	default:
 		return errors.New("unexpected Seed Category")
