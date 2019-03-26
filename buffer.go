@@ -6,8 +6,8 @@ type Buffer struct {
 	tracks []Track
 }
 
-func NewBuffer(ms MusicService) (*Buffer, error) {
-	return &Buffer{serv: ms}, nil
+func NewBuffer(serv MusicService) *Buffer {
+	return &Buffer{serv: serv}
 }
 
 func (b Buffer) TopArtists() ([]Artist, error) {
