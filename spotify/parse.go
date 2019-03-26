@@ -49,10 +49,3 @@ func ParseFullTracks(old ...spotify.FullTrack) []refind.Track {
 
 	return t
 }
-
-func ParsePlaylist(old spotify.FullPlaylist) refind.Playlist {
-	return refind.Playlist{
-		ID:  string(old.ID),
-		URI: string(old.URI),
-	}
-}
