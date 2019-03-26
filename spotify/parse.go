@@ -5,47 +5,47 @@ import (
 	"github.com/zmb3/spotify"
 )
 
-func ParseArtist(old spotify.SimpleArtist) refind.Artist {
+func ParseArtist(prev spotify.SimpleArtist) refind.Artist {
 	return refind.Artist{
-		ID:   string(old.ID),
-		Name: old.Name,
+		ID:   string(prev.ID),
+		Name: prev.Name,
 	}
 }
 
-func ParseArtists(old ...spotify.FullArtist) []refind.Artist {
-	var a []refind.Artist
+func ParseArtists(prev ...spotify.FullArtist) []refind.Artist {
+	var curr []refind.Artist
 
-	for _, o := range old {
-		a = append(a, ParseArtist(o.SimpleArtist))
+	for _, p := range prev {
+		curr = append(curr, ParseArtist(p.SimpleArtist))
 	}
 
-	return a
+	return curr
 }
 
-func ParseTrack(old spotify.SimpleTrack) refind.Track {
+func ParseTrack(prev spotify.SimpleTrack) refind.Track {
 	return refind.Track{
-		ID:     string(old.ID),
-		Name:   old.Name,
-		Artist: ParseArtist(old.Artists[0]),
+		ID:     string(prev.ID),
+		Name:   prev.Name,
+		Artist: ParseArtist(prev.Artists[0]),
 	}
 }
 
-func ParseSimpleTracks(old ...spotify.SimpleTrack) []refind.Track {
-	var t []refind.Track
+func ParseSimpleTracks(prev ...spotify.SimpleTrack) []refind.Track {
+	var curr []refind.Track
 
-	for _, o := range old {
-		t = append(t, ParseTrack(o))
+	for _, p := range prev {
+		curr = append(curr, ParseTrack(p))
 	}
 
-	return t
+	return curr
 }
 
-func ParseFullTracks(old ...spotify.FullTrack) []refind.Track {
-	var t []refind.Track
+func ParseFullTracks(prev ...spotify.FullTrack) []refind.Track {
+	var curr []refind.Track
 
-	for _, o := range old {
-		t = append(t, ParseTrack(o.SimpleTrack))
+	for _, p := range prev {
+		curr = append(curr, ParseTrack(p.SimpleTrack))
 	}
 
-	return t
+	return curr
 }
