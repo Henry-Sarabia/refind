@@ -10,7 +10,7 @@ type Seed struct {
 	spotify.Seeds
 }
 
-func ParseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
+func parseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
 	var sds []spotify.Seeds
 
 	for len(old) > 0 {
