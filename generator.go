@@ -2,13 +2,19 @@ package refind
 
 import "github.com/pkg/errors"
 
+var errNilGen = errors.New("cannot initialize new generator using nil interface")
+
 type generator struct {
 	serv MusicService
 	rec  Recommender
 }
 
-func New(serv MusicService, rec Recommender) *generator {
-	return &generator{serv: newBuffer(serv), rec: rec}
+func New(serv MusicService, rec Recommender) (*generator, error) {
+	if serv == nil || rec == nil {
+		return nil, errNilGen
+	}
+
+	return &generator{serv: newBuffer(serv), rec: rec}, nil
 }
 
 type MusicService interface {
@@ -23,7 +29,7 @@ type Recommender interface {
 func (g generator) Tracklist() ([]Track, error) {
 	list, err := g.fromTracks()
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot generate tracklist from track data")
+		return nil, err
 	}
 
 	return list, nil

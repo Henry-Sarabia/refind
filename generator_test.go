@@ -36,6 +36,57 @@ func (f fakeRecommender) Recommendations([]Seed) ([]Track, error) {
 	return f.tracks, f.err
 }
 
+func TestNew(t *testing.T) {
+	tests := []struct {
+		name string
+		serv MusicService
+		rec Recommender
+		wantGen *generator
+		wantErr error
+	}{
+		{
+			"Valid interfaces",
+			fakeMusicService{},
+			fakeRecommender{},
+			&generator{serv: newBuffer(fakeMusicService{}), rec: fakeRecommender{}},
+			nil,
+		},
+		{
+			"Nil MusicService",
+			nil,
+			fakeRecommender{},
+			nil,
+			errNilGen,
+		},
+		{
+			"Nil Recommender",
+			fakeMusicService{},
+			nil,
+			nil,
+			errNilGen,
+		},
+		{
+			"Nil interfaces",
+			nil,
+			nil,
+			nil,
+			errNilGen,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := New(test.serv, test.rec)
+			if err != test.wantErr {
+				t.Errorf("got: <%v>, want: <%v>", err, test.wantErr)
+			}
+
+			if !reflect.DeepEqual(got, test.wantGen) {
+				t.Errorf("got: <%v>, want: <%v>", got, test.wantGen)
+			}
+		})
+	}
+}
+
 func TestGenerator_Tracklist(t *testing.T) {
 	tests := []struct {
 		name string
