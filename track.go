@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+var errTrackSeed = errors.New("cannot create track seed with missing id")
 type Track struct {
 	ID     string
 	Name   string
@@ -13,7 +14,7 @@ type Track struct {
 
 func (t Track) Seed() (Seed, error) {
 	if blank.Is(t.ID) {
-		return Seed{}, errors.New("cannot create track seed with missing id")
+		return Seed{}, errTrackSeed
 	}
 	return Seed{Category: TrackSeed, ID: t.ID}, nil
 }
