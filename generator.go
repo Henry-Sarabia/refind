@@ -1,6 +1,8 @@
 package refind
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
 var errNilGen = errors.New("cannot initialize new generator using nil interface")
 
@@ -14,7 +16,7 @@ func New(serv MusicService, rec Recommender) (*generator, error) {
 		return nil, errNilGen
 	}
 
-	return &generator{serv: newBuffer(serv), rec: rec}, nil
+	return &generator{serv: serv, rec: rec}, nil
 }
 
 type MusicService interface {

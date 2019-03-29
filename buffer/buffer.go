@@ -1,17 +1,19 @@
-package refind
+package buffer
+
+import "github.com/Henry-Sarabia/refind"
 
 type buffer struct {
-	serv MusicService
-	artists []Artist
-	tracks []Track
+	serv refind.MusicService
+	artists []refind.Artist
+	tracks []refind.Track
 }
 
-func newBuffer(serv MusicService) *buffer {
+func New(serv refind.MusicService) *buffer {
 	return &buffer{serv: serv}
 }
 
-func (b buffer) TopArtists() ([]Artist, error) {
-	var top []Artist
+func (b buffer) TopArtists() ([]refind.Artist, error) {
+	var top []refind.Artist
 	if b.artists != nil {
 		top = b.artists
 	}
@@ -25,8 +27,8 @@ func (b buffer) TopArtists() ([]Artist, error) {
 	return top, nil
 }
 
-func (b buffer) RecentTracks() ([]Track, error) {
-	var rec []Track
+func (b buffer) RecentTracks() ([]refind.Track, error) {
+	var rec []refind.Track
 	if b.tracks != nil {
 		rec = b.tracks
 	}

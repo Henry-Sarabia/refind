@@ -48,7 +48,7 @@ func TestNew(t *testing.T) {
 			"Valid interfaces",
 			fakeMusicService{},
 			fakeRecommender{},
-			&generator{serv: newBuffer(fakeMusicService{}), rec: fakeRecommender{}},
+			&generator{serv: fakeMusicService{}, rec: fakeRecommender{}},
 			nil,
 		},
 		{
