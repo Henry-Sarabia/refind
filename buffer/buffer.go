@@ -21,13 +21,11 @@ func New(serv refind.MusicService) (*buffer, error) {
 }
 
 func (b buffer) TopArtists() ([]refind.Artist, error) {
-	var top []refind.Artist
-	if b.artists != nil {
-		top = b.artists
+	if len(b.artists) > 0 {
+		return b.artists, nil
 	}
 
-	var err error
-	top, err = b.serv.TopArtists()
+	top, err := b.serv.TopArtists()
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +34,11 @@ func (b buffer) TopArtists() ([]refind.Artist, error) {
 }
 
 func (b buffer) RecentTracks() ([]refind.Track, error) {
-	var rec []refind.Track
-	if b.tracks != nil {
-		rec = b.tracks
+	if len(b.tracks) > 0 {
+		return b.tracks, nil
 	}
 
-	var err error
-	rec, err = b.serv.RecentTracks()
+	rec, err := b.serv.RecentTracks()
 	if err != nil {
 		return nil, err
 	}
