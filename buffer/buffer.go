@@ -1,6 +1,11 @@
 package buffer
 
-import "github.com/Henry-Sarabia/refind"
+import (
+	"github.com/Henry-Sarabia/refind"
+	"github.com/pkg/errors"
+)
+
+var errNilBuf = errors.New("cannot initialize new buffer using nil interface")
 
 type buffer struct {
 	serv refind.MusicService
@@ -8,8 +13,11 @@ type buffer struct {
 	tracks []refind.Track
 }
 
-func New(serv refind.MusicService) *buffer {
-	return &buffer{serv: serv}
+func New(serv refind.MusicService) (*buffer, error) {
+	if serv == nil {
+		return nil, errNilBuf
+	}
+	return &buffer{serv: serv}, nil
 }
 
 func (b buffer) TopArtists() ([]refind.Artist, error) {
