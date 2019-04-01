@@ -29,12 +29,17 @@ type Recommender interface {
 }
 
 func (g generator) Tracklist() ([]Track, error) {
-	list, err := g.fromTracks()
-	if err != nil {
-		return nil, err
+	var err error
+
+	if list, err := g.fromTracks(); err == nil {
+		return list, nil
 	}
 
-	return list, nil
+	if list, err := g.fromArtists(); err == nil {
+		return list, nil
+	}
+
+	return nil, err
 }
 
 func (g generator) fromTracks() ([]Track, error) {
@@ -60,6 +65,31 @@ func (g generator) fromTracks() ([]Track, error) {
 	top, err := g.serv.TopArtists()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
+	}
+
+	f := filter(recs, toMap(top))
+
+	return f, nil
+}
+
+func (g generator) fromArtists() ([]Track, error) {
+	top, err := g.serv.TopArtists()
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch top artists")
+	}
+
+	var sds []Seed
+	for _, t := range top {
+		sd, err := t.Seed()
+		if err != nil {
+			return nil, errors.Wrap(err, "one or more artists are invalid seeds")
+		}
+		sds = append(sds, sd)
+	}
+
+	recs, err := g.rec.Recommendations(sds)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
 
 	f := filter(recs, toMap(top))
