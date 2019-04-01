@@ -29,14 +29,13 @@ type Recommender interface {
 }
 
 func (g generator) Tracklist() ([]Track, error) {
-	var list []Track
 	var err error
 
-	if list, err = g.fromTracks(); err == nil {
+	if list, err := g.fromTracks(); err == nil {
 		return list, nil
 	}
 
-	if list, err = g.fromArtists(); err == nil {
+	if list, err := g.fromArtists(); err == nil {
 		return list, nil
 	}
 
