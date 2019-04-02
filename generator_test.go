@@ -218,6 +218,101 @@ func TestGenerator_FromTracks(t *testing.T) {
 	}
 }
 
+func TestGenerator_FromArtists(t *testing.T) {
+	tests := []struct {
+		name string
+		gen generator
+		wantList []Track
+		wantErr error
+	}{
+		{
+			"Valid responses",
+			generator{
+				serv: fakeMusicService{
+					artists: []Artist{
+						{ID: "0", Name: "foo"},
+						{ID: "1", Name: "bar"},
+					},
+					artistErr: nil,
+				},
+				rec: fakeRecommender{
+					tracks: []Track {
+						{ID: "10", Name: "qux"},
+					},
+					err: nil,
+				},
+			},
+			[]Track{
+				{ID: "10", Name: "qux"},
+			},
+			nil,
+		},
+		{
+			"Empty top artists response",
+			generator{
+				serv: fakeMusicService{
+					artists: nil,
+					artistErr: testErrFetchArtists,
+				},
+				rec: fakeRecommender{
+					tracks: nil,
+					err: nil,
+				},
+			},
+			nil,
+			testErrFetchArtists,
+		},
+		{
+			"Empty recommendation response",
+			generator{
+				serv: fakeMusicService{
+					artists: []Artist{
+						{ID: "0", Name: "foo"},
+						{ID: "1", Name: "bar"},
+					},
+					artistErr: nil,
+				},
+				rec: fakeRecommender{
+					tracks: nil,
+					err: testErrFetchRecommendations,
+				},
+			},
+			nil,
+			testErrFetchRecommendations,
+		},
+		{
+			"Invalid artist seed",
+			generator{
+				serv: fakeMusicService{
+					artists: []Artist{
+						{ID: "0", Name: "foo"},
+						{ID: "", Name: "bar"},
+					},
+					artistErr: nil,
+				},
+				rec: fakeRecommender{
+					tracks: nil,
+					err: nil,
+				},
+			},
+			nil,
+			errArtistSeed,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			list, err := test.gen.FromArtists()
+			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
+				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
+			}
+
+			if !reflect.DeepEqual(list, test.wantList) {
+				t.Errorf("got: <%v>, want: <%v>", list, test.wantList)
+			}
+		})
+	}
+}
+
 func TestToMap(t *testing.T) {
 	tests := []struct {
 		name string

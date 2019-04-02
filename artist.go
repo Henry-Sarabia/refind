@@ -5,6 +5,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var errArtistSeed = errors.New("cannot create artist seed with missing id")
+
 type Artist struct {
 	ID   string
 	Name string
@@ -12,7 +14,7 @@ type Artist struct {
 
 func (a Artist) Seed() (Seed, error) {
 	if blank.Is(a.ID) {
-		return Seed{}, errors.New("cannot create artist seed with missing id")
+		return Seed{}, errArtistSeed
 	}
 
 	return Seed{Category: ArtistSeed, ID: a.ID}, nil
