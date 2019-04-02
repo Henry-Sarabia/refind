@@ -206,7 +206,7 @@ func TestGenerator_FromTracks(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.FromTracks()
+			list, err := test.gen.Tracklist()
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
@@ -301,7 +301,7 @@ func TestGenerator_FromArtists(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.FromArtists()
+			list, err := test.gen.LimitedTracklist()
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
