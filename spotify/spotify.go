@@ -79,7 +79,7 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 	return tracks, nil
 }
 
-func (s *service) playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
+func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
 	u, err := s.c.CurrentUser()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch user")
