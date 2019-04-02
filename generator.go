@@ -28,21 +28,7 @@ type Recommender interface {
 	Recommendations([]Seed) ([]Track, error)
 }
 
-func (g generator) Tracklist() ([]Track, error) {
-	var err error
-
-	if list, err := g.fromTracks(); err == nil {
-		return list, nil
-	}
-
-	if list, err := g.fromArtists(); err == nil {
-		return list, nil
-	}
-
-	return nil, err
-}
-
-func (g generator) fromTracks() ([]Track, error) {
+func (g generator) FromTracks() ([]Track, error) {
 	tracks, err := g.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
@@ -72,7 +58,7 @@ func (g generator) fromTracks() ([]Track, error) {
 	return f, nil
 }
 
-func (g generator) fromArtists() ([]Track, error) {
+func (g generator) FromArtists() ([]Track, error) {
 	top, err := g.serv.TopArtists()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")

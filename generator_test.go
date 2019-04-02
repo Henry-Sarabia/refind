@@ -87,7 +87,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestGenerator_Tracklist(t *testing.T) {
+func TestGenerator_FromTracks(t *testing.T) {
 	tests := []struct {
 		name string
 		gen generator
@@ -206,7 +206,7 @@ func TestGenerator_Tracklist(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.Tracklist()
+			list, err := test.gen.FromTracks()
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
