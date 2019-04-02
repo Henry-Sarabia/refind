@@ -6,6 +6,7 @@ import (
 )
 
 var errTrackSeed = errors.New("cannot create track seed with missing id")
+
 type Track struct {
 	ID     string
 	Name   string
