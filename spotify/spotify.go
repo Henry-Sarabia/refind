@@ -12,13 +12,15 @@ const (
 	publicPlaylist bool = true
 )
 
+var errNilClient = errors.New("client pointer is nil")
+
 type service struct {
 	c *spotify.Client
 }
 
 func New(c *spotify.Client) (*service, error) {
 	if c == nil {
-		return nil, errors.New("client pointer is nil")
+		return nil, errNilClient
 	}
 	s := &service{c: c}
 
