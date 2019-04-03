@@ -9,7 +9,7 @@ import (
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name string
-		c *spotify.Client
+		c clienter
 		wantServ *service
 		wantErr error
 	}{
@@ -36,6 +36,20 @@ func TestNew(t *testing.T) {
 			if !reflect.DeepEqual(got, test.wantServ) {
 				t.Errorf("got: <%v>, want: <%v>", got, test.wantServ)
 			}
+		})
+	}
+}
+
+func TestService_TopArtists(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+
+		// TODO: test cases
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
 		})
 	}
 }

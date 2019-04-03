@@ -14,11 +14,22 @@ const (
 
 var errNilClient = errors.New("client pointer is nil")
 
-type service struct {
-	c *spotify.Client
+type clienter interface {
+	CurrentUser() (*spotify.PrivateUser, error)
+	CurrentUsersTopArtists() (*spotify.FullArtistPage, error)
+	CurrentUsersTopTracks() (*spotify.FullTrackPage, error)
+	PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error)
+	GetRecommendations(spotify.Seeds, *spotify.TrackAttributes, *spotify.Options) (*spotify.Recommendations, error)
+	CreatePlaylistForUser(string, string, string, bool) (*spotify.FullPlaylist, error)
+	AddTracksToPlaylist(spotify.ID, ...spotify.ID) (string, error)
+	GetArtists(...spotify.ID) ([]*spotify.FullArtist, error)
 }
 
-func New(c *spotify.Client) (*service, error) {
+type service struct {
+	c clienter
+}
+
+func New(c clienter) (*service, error) {
 	if c == nil {
 		return nil, errNilClient
 	}
