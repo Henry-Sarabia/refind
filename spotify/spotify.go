@@ -15,31 +15,60 @@ const (
 var errNilClient = errors.New("client pointer is nil")
 
 type clienter interface {
-	CurrentUser() (*spotify.PrivateUser, error)
+	artister
+	tracker
+	recenter
+	recommender
+	playlister
+}
+
+type artister interface {
 	CurrentUsersTopArtists() (*spotify.FullArtistPage, error)
+}
+
+type tracker interface {
 	CurrentUsersTopTracks() (*spotify.FullTrackPage, error)
+}
+
+type recenter interface {
 	PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error)
+}
+
+type recommender interface {
 	GetRecommendations(spotify.Seeds, *spotify.TrackAttributes, *spotify.Options) (*spotify.Recommendations, error)
-	CreatePlaylistForUser(string, string, string, bool) (*spotify.FullPlaylist, error)
+}
+
+type playlister interface {
 	AddTracksToPlaylist(spotify.ID, ...spotify.ID) (string, error)
-	GetArtists(...spotify.ID) ([]*spotify.FullArtist, error)
+	CreatePlaylistForUser(string, string, string, bool) (*spotify.FullPlaylist, error)
+	CurrentUser() (*spotify.PrivateUser, error)
 }
 
 type service struct {
-	c clienter
+	art artister
+	track tracker
+	rec recenter
+	recom recommender
+	play playlister
 }
 
 func New(c clienter) (*service, error) {
 	if c == nil {
 		return nil, errNilClient
 	}
-	s := &service{c: c}
+	s := &service{
+		art: c,
+		track: c,
+		rec: c,
+		recom: c,
+		play: c,
+	}
 
 	return s, nil
 }
 
 func (s *service) TopArtists() ([]refind.Artist, error) {
-	top, err := s.c.CurrentUsersTopArtists()
+	top, err := s.art.CurrentUsersTopArtists()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
 	}
@@ -48,7 +77,7 @@ func (s *service) TopArtists() ([]refind.Artist, error) {
 }
 
 func (s *service) topTracks() ([]refind.Track, error) {
-	top, err := s.c.CurrentUsersTopTracks()
+	top, err := s.track.CurrentUsersTopTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top tracks")
 	}
@@ -57,7 +86,7 @@ func (s *service) topTracks() ([]refind.Track, error) {
 }
 
 func (s *service) RecentTracks() ([]refind.Track, error) {
-	rec, err := s.c.PlayerRecentlyPlayed()
+	rec, err := s.rec.PlayerRecentlyPlayed()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recently played tracks")
 	}
@@ -80,7 +109,7 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 	attr := spotify.NewTrackAttributes().TargetPopularity(popTarget).MaxPopularity(popMax)
 
 	for _, sd := range sds {
-		recs, err := s.c.GetRecommendations(sd, attr, nil)
+		recs, err := s.recom.GetRecommendations(sd, attr, nil)
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot fetch recommendations")
 		}
@@ -93,12 +122,12 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 }
 
 func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
-	u, err := s.c.CurrentUser()
+	u, err := s.play.CurrentUser()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch user")
 	}
 
-	pl, err := s.c.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
+	pl, err := s.play.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create playlist")
 	}
@@ -108,7 +137,7 @@ func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlayl
 		IDs = append(IDs, spotify.ID(t.ID))
 	}
 
-	_, err = s.c.AddTracksToPlaylist(pl.ID, IDs...)
+	_, err = s.play.AddTracksToPlaylist(pl.ID, IDs...)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot add tracks to playlist")
 	}

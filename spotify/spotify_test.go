@@ -22,7 +22,13 @@ func TestNew(t *testing.T) {
 		{
 			name: "Valid client",
 			c: &spotify.Client{},
-			wantServ: &service{c: &spotify.Client{}},
+			wantServ: &service{
+				art: &spotify.Client{},
+				track: &spotify.Client{},
+				rec: &spotify.Client{},
+				recom: &spotify.Client{},
+				play: &spotify.Client{},
+			},
 			wantErr: nil,
 		},
 	}
@@ -40,16 +46,22 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestService_TopArtists(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-
-		// TODO: test cases
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-		})
-	}
-}
+//func TestService_TopArtists(t *testing.T) {
+//	tests := []struct {
+//		name string
+//		c clienter
+//		wantArts []refind.Artist
+//		wantErr error
+//	}{
+//		{
+//			name: "happy path",
+//			c:
+//		},
+//		// TODO: test cases
+//	}
+//	for _, test := range tests {
+//		t.Run(test.name, func(t *testing.T) {
+//
+//		})
+//	}
+//}
