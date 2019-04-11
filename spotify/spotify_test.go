@@ -10,28 +10,36 @@ import (
 	"testing"
 )
 
+const (
+	testEmptyFile        string = "test_data/empty.json"
+	testTopArtistFile    string = "test_data/current_users_top_artists.json"
+	testRecentTracksFile string = "test_data/player_recently_played.json"
+)
+
+var testErrNoData = errors.New("no data")
+
 func TestNew(t *testing.T) {
 	tests := []struct {
-		name string
-		c clienter
+		name     string
+		c        clienter
 		wantServ *service
-		wantErr error
+		wantErr  error
 	}{
 		{
-			name: "Nil client",
-			c: nil,
+			name:     "Nil client",
+			c:        nil,
 			wantServ: nil,
-			wantErr: errNilClient,
+			wantErr:  errNilClient,
 		},
 		{
 			name: "Valid client",
-			c: &spotify.Client{},
+			c:    &spotify.Client{},
 			wantServ: &service{
-				art: &spotify.Client{},
+				art:   &spotify.Client{},
 				track: &spotify.Client{},
-				rec: &spotify.Client{},
+				rec:   &spotify.Client{},
 				recom: &spotify.Client{},
-				play: &spotify.Client{},
+				play:  &spotify.Client{},
 			},
 			wantErr: nil,
 		},
@@ -52,7 +60,7 @@ func TestNew(t *testing.T) {
 
 type fakeArtister struct {
 	file string
-	err error
+	err  error
 }
 
 func (f fakeArtister) CurrentUsersTopArtists() (*spotify.FullArtistPage, error) {
@@ -69,23 +77,19 @@ func (f fakeArtister) CurrentUsersTopArtists() (*spotify.FullArtistPage, error) 
 	return artist, f.err
 }
 
-const testTopArtistFile string = "test_data/current_users_top_artists.json"
-const testEmptyFile string = "test_data/empty.json"
-var testErrNoData = errors.New("no data")
-
 func TestService_TopArtists(t *testing.T) {
 	tests := []struct {
-		name string
-		art artister
+		name     string
+		art      artister
 		wantArts []refind.Artist
-		wantErr error
+		wantErr  error
 	}{
 		{
 			name: "Valid data, nil error",
 			art: fakeArtister{
 				file: testTopArtistFile,
-				err: nil,
-				},
+				err:  nil,
+			},
 			wantArts: []refind.Artist{
 				{ID: "4Z8W4fKeB5YxbusRsdQVPb", Name: "Radiohead"},
 				{ID: "3yY2gUcIsjMr8hjo51PoJ8", Name: "The Smiths"},
@@ -104,28 +108,28 @@ func TestService_TopArtists(t *testing.T) {
 			name: "Valid data, error",
 			art: fakeArtister{
 				file: testTopArtistFile,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			wantArts: nil,
-			wantErr: testErrNoData,
+			wantErr:  testErrNoData,
+		},
+		{
+			name: "No data, nil error",
+			art: fakeArtister{
+				file: testEmptyFile,
+				err:  nil,
+			},
+			wantArts: nil,
+			wantErr:  errInvalidData,
 		},
 		{
 			name: "No data, error",
 			art: fakeArtister{
 				file: testEmptyFile,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			wantArts: nil,
-			wantErr: testErrNoData,
-		},
-		{
-			name: "No data, no error",
-			art: fakeArtister{
-				file: testEmptyFile,
-				err: nil,
-			},
-			wantArts: nil,
-			wantErr: errInvalidData,
+			wantErr:  testErrNoData,
 		},
 	}
 	for _, test := range tests {
@@ -139,6 +143,97 @@ func TestService_TopArtists(t *testing.T) {
 
 			if !reflect.DeepEqual(got, test.wantArts) {
 				t.Errorf("got: <%v>, want: <%v>", got, test.wantArts)
+			}
+		})
+	}
+}
+
+type fakeRecenter struct {
+	file string
+	err  error
+}
+
+func (f fakeRecenter) PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error) {
+	b, err := ioutil.ReadFile(f.file)
+	if err != nil {
+		return nil, err
+	}
+
+	var rec []spotify.RecentlyPlayedItem
+	if err := json.Unmarshal(b, &rec); err != nil {
+		return nil, err
+	}
+
+	return rec, f.err
+}
+
+func TestService_RecentTracks(t *testing.T) {
+	tests := []struct {
+		name       string
+		rec        recenter
+		wantTracks []refind.Track
+		wantErr    error
+	}{
+		{
+			name: "Valid data, nil error",
+			rec: fakeRecenter{
+				file: testRecentTracksFile,
+				err:  nil,
+			},
+			wantTracks: []refind.Track{
+				{ID: "5ETM3aBrDf45TWg9AgnWQD", Name: "Black Nostaljack AKA Come On", Artist: refind.Artist{ID: "4oLZx5FplbgfM8DEe9U8LB", Name: "Camp Lo"}},
+				{ID: "1s92LwFTivD2f9o0s2hb78", Name: "Naturally Born", Artist: refind.Artist{ID: "099tLNCZZvtjC7myKD0mFp", Name: "Kool G Rap"}},
+				{ID: "0FcAIIz4Ti87cFBwyD3iCE", Name: "Little Darlin Seize the Sun", Artist: refind.Artist{ID: "4CMC2nnStv4EENjKBSDpKR", Name: "Christina Vantzou"}},
+				{ID: "0brnyKRZKnNngbH444p8cn", Name: "Prince of the Sea", Artist: refind.Artist{ID: "4G1ZsxfEEztbE1VcnNInPg", Name: "Chihei Hatakeyama"}},
+				{ID: "5nP1e5QSwT07XR2zpTVJGc", Name: "Ninteen Seventy Something", Artist: refind.Artist{ID: "1wo9h8DP7M0M1orKuGZgWv", Name: "Masta Ace"}},
+				{ID: "53aUYPTwJe6YrbSs8lQCEF", Name: "Buck Em Down", Artist: refind.Artist{ID: "2yN6bq26wynQcRuPkBYTDb", Name: "Black Moon"}},
+				{ID: "1qKsRg2PvBzhWkMOpanQq3", Name: "Hiatus", Artist: refind.Artist{ID: "6AdRO941ZEDh4GHcCUdEs4", Name: "Rafael Anton Irisarri"}},
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Valid data, error",
+			rec: fakeRecenter{
+				file: testRecentTracksFile,
+				err: testErrNoData,
+			},
+			wantTracks: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "No data, nil error",
+			rec: fakeRecenter{
+				file: testEmptyFile,
+				err: nil,
+			},
+			wantTracks: nil,
+			wantErr: errInvalidData,
+		},
+		{
+			name: "No data, error",
+			rec: fakeRecenter{
+				file: testEmptyFile,
+				err: testErrNoData,
+			},
+			wantTracks: nil,
+			wantErr: testErrNoData,
+		},
+		// TODO: test cases
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			serv := service{rec: test.rec}
+
+			got, err := serv.RecentTracks()
+			if errors.Cause(err) != test.wantErr {
+				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
+			}
+
+			if !reflect.DeepEqual(got, test.wantTracks) {
+				t.Errorf("\ngot:  <%v>, \nwant: <%v>", got, test.wantTracks)
 			}
 		})
 	}
