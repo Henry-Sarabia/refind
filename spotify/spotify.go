@@ -13,6 +13,7 @@ const (
 )
 
 var errNilClient = errors.New("client pointer is nil")
+var errInvalidData = errors.New("invalid or empty data returned")
 
 type clienter interface {
 	artister
@@ -73,6 +74,10 @@ func (s *service) TopArtists() ([]refind.Artist, error) {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
 	}
 
+	if top == nil {
+		return nil, errInvalidData
+	}
+
 	return parseArtists(top.Artists...), nil
 }
 
@@ -82,6 +87,10 @@ func (s *service) topTracks() ([]refind.Track, error) {
 		return nil, errors.Wrap(err, "cannot fetch top tracks")
 	}
 
+	if top == nil {
+		return nil, errInvalidData
+	}
+
 	return parseFullTracks(top.Tracks...), nil
 }
 
@@ -89,6 +98,10 @@ func (s *service) RecentTracks() ([]refind.Track, error) {
 	rec, err := s.rec.PlayerRecentlyPlayed()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recently played tracks")
+	}
+
+	if len(rec) <= 0 {
+		return nil, errInvalidData
 	}
 
 	var t []refind.Track
@@ -112,6 +125,10 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 		recs, err := s.recom.GetRecommendations(sd, attr, nil)
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot fetch recommendations")
+		}
+
+		if recs == nil {
+			return nil, errInvalidData
 		}
 
 		t := parseSimpleTracks(recs.Tracks...)
