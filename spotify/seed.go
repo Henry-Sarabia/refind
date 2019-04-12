@@ -21,7 +21,9 @@ func parseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
 		sds = append(sds, sd)
 
 		if len(old) > spotify.MaxNumberOfSeeds {
-			old = old[:spotify.MaxNumberOfSeeds]
+			old = old[spotify.MaxNumberOfSeeds:]
+		} else {
+			old = nil
 		}
 	}
 
