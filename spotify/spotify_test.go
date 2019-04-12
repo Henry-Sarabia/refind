@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	testFileEmpty        string = "test_data/empty.json"
-	testFileTopArtists   string = "test_data/current_users_top_artists.json"
-	testFileRecentTracks string = "test_data/player_recently_played.json"
+	testFileEmpty           string = "test_data/empty.json"
+	testFileTopArtists      string = "test_data/current_users_top_artists.json"
+	testFileRecentTracks    string = "test_data/player_recently_played.json"
 	testFileRecommendations string = "test_data/get_recommendations.json"
+	testFileCurrentUser     string = "test_data/current_user.json"
+	testFileCreatePlaylist  string = "test_data/create_playlist_for_user.json"
 )
 
 var testErrNoData = errors.New("no data")
@@ -202,7 +204,7 @@ func TestService_RecentTracks(t *testing.T) {
 				err:  testErrNoData,
 			},
 			wantTracks: nil,
-			wantErr: testErrNoData,
+			wantErr:    testErrNoData,
 		},
 		{
 			name: "No data, nil error",
@@ -220,7 +222,7 @@ func TestService_RecentTracks(t *testing.T) {
 				err:  testErrNoData,
 			},
 			wantTracks: nil,
-			wantErr: testErrNoData,
+			wantErr:    testErrNoData,
 		},
 	}
 	for _, test := range tests {
@@ -241,7 +243,7 @@ func TestService_RecentTracks(t *testing.T) {
 
 type fakeRecommender struct {
 	file string
-	err error
+	err  error
 }
 
 func (f fakeRecommender) GetRecommendations(sds spotify.Seeds, attr *spotify.TrackAttributes, opt *spotify.Options) (*spotify.Recommendations, error) {
@@ -260,17 +262,17 @@ func (f fakeRecommender) GetRecommendations(sds spotify.Seeds, attr *spotify.Tra
 
 func TestService_Recommendations(t *testing.T) {
 	tests := []struct {
-		name string
-		recom recommender
-		sds []refind.Seed
+		name       string
+		recom      recommender
+		sds        []refind.Seed
 		wantTracks []refind.Track
-		wantErr error
+		wantErr    error
 	}{
 		{
 			name: "Valid data, valid seeds, nil error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
@@ -296,7 +298,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "Valid data, valid seeds, error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
@@ -305,13 +307,13 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.GenreSeed, ID: "country"},
 			},
 			wantTracks: nil,
-			wantErr: testErrNoData,
+			wantErr:    testErrNoData,
 		},
 		{
 			name: "Valid data, no seeds, nil error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: nil,
+				err:  nil,
 			},
 			sds:        nil,
 			wantTracks: nil,
@@ -321,7 +323,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "Valid data, no seeds, error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds:        nil,
 			wantTracks: nil,
@@ -331,7 +333,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "Valid data, invalid seed ID, nil error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: refind.TrackSeed, ID: ""},
@@ -343,7 +345,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "Valid data, invalid seed ID, error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: refind.TrackSeed, ID: ""},
@@ -355,31 +357,31 @@ func TestService_Recommendations(t *testing.T) {
 			name: "Valid data, invalid seed category, nil error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: -99, ID: "some_id"},
 			},
 			wantTracks: nil,
-			wantErr: errSeedCategory,
+			wantErr:    errSeedCategory,
 		},
 		{
 			name: "Valid data, invalid seed category, error",
 			recom: fakeRecommender{
 				file: testFileRecommendations,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: -99, ID: "some_id"},
 			},
 			wantTracks: nil,
-			wantErr: errSeedCategory,
+			wantErr:    errSeedCategory,
 		},
 		{
 			name: "No data, valid seeds, nil error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
@@ -394,7 +396,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "No data, valid seeds, error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
@@ -403,13 +405,13 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.GenreSeed, ID: "country"},
 			},
 			wantTracks: nil,
-			wantErr: testErrNoData,
+			wantErr:    testErrNoData,
 		},
 		{
 			name: "No data, no seeds, nil error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: nil,
+				err:  nil,
 			},
 			sds:        nil,
 			wantTracks: nil,
@@ -419,7 +421,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "No data, no seeds, error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds:        nil,
 			wantTracks: nil,
@@ -429,7 +431,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "No data, invalid seed ID, nil error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: refind.TrackSeed, ID: ""},
@@ -441,7 +443,7 @@ func TestService_Recommendations(t *testing.T) {
 			name: "No data, invalid seed ID, error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: refind.TrackSeed, ID: ""},
@@ -453,25 +455,25 @@ func TestService_Recommendations(t *testing.T) {
 			name: "No data, invalid seed category, nil error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: nil,
+				err:  nil,
 			},
 			sds: []refind.Seed{
 				{Category: -99, ID: "some_id"},
 			},
 			wantTracks: nil,
-			wantErr: errSeedCategory,
+			wantErr:    errSeedCategory,
 		},
 		{
 			name: "No data, invalid seed category, error",
 			recom: fakeRecommender{
 				file: testFileEmpty,
-				err: testErrNoData,
+				err:  testErrNoData,
 			},
 			sds: []refind.Seed{
 				{Category: -99, ID: "some_id"},
 			},
 			wantTracks: nil,
-			wantErr: errSeedCategory,
+			wantErr:    errSeedCategory,
 		},
 	}
 	for _, test := range tests {
@@ -485,6 +487,297 @@ func TestService_Recommendations(t *testing.T) {
 
 			if !reflect.DeepEqual(got, test.wantTracks) {
 				t.Errorf("\ngot:  <%v>, \nwant: <%v>", got, test.wantTracks)
+			}
+		})
+	}
+}
+
+type fakePlaylister struct {
+	userFile     string
+	userErr      error
+	playlistFile string
+	playlistErr  error
+	addTracksErr error
+}
+
+func (f fakePlaylister) AddTracksToPlaylist(spotify.ID, ...spotify.ID) (string, error) {
+	return "", f.addTracksErr
+}
+
+func (f fakePlaylister) CreatePlaylistForUser(string, string, string, bool) (*spotify.FullPlaylist, error) {
+	b, err := ioutil.ReadFile(f.playlistFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var play *spotify.FullPlaylist
+	if err := json.Unmarshal(b, &play); err != nil {
+		return nil, f.playlistErr
+	}
+
+	return play, f.playlistErr
+}
+
+func (f fakePlaylister) CurrentUser() (*spotify.PrivateUser, error) {
+	b, err := ioutil.ReadFile(f.userFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var u *spotify.PrivateUser
+	if err := json.Unmarshal(b, &u); err != nil {
+		return nil, f.userErr
+	}
+
+	return u, f.userErr
+}
+
+var testFullPlaylist = &spotify.FullPlaylist{
+	SimplePlaylist: spotify.SimplePlaylist{
+		Collaborative: false,
+		ExternalURLs: map[string]string{
+			"spotify": "http://open.spotify.com/user/someone/playlist/7I6yjOAxMq4qsvzgqxw7aU",
+		},
+		Endpoint: "https://api.spotify.com/v1/users/someone/playlists/7I6yjOAxMq4qsvzgqxw7aU?fields=fields=href,name,owner(!href,external_urls),tracks.items(added_by.id,track(name,href,album(name,href)))",
+		ID: "7I6yjOAxMq4qsvzgqxw7aU",
+		Images: []spotify.Image{
+			{Height: 640, Width: 640, URL: "https://i.scdn.co/image/449156e8f2458c247ea9a668e498c598b159f12f"},
+		},
+		Name: "O.A.R. — The Rockville LP",
+		Owner: spotify.User{
+			ExternalURLs: map[string]string{
+				"spotify": "http://open.spotify.com/user/someone",
+			},
+			Endpoint: "https://api.spotify.com/v1/users/someone",
+			ID: "someone",
+			URI: "spotify:user:someone",
+		},
+		IsPublic: true,
+		SnapshotID: "Yo+BthwRfySLE498r55BaKSJNw0/3ZDUzVYBcRxVtMReZ3joqyhIlBoMJKif2OWJ",
+		URI: "spotify:user:someone:playlist:7I6yjOAxMq4qsvzgqxw7aU",
+	},
+	Followers: spotify.Followers{},
+	Tracks: spotify.PlaylistTrackPage{
+		Tracks: []spotify.PlaylistTrack{
+			{
+				AddedAt: "2014-06-10T11:23:19Z",
+				AddedBy: spotify.User{
+					ExternalURLs: map[string]string{
+						"spotify": "http://open.spotify.com/user/someone",
+					},
+					Endpoint: "https://api.spotify.com/v1/users/someone",
+					ID: "someone",
+					URI: "spotify:user:someone",
+				},
+				Track: spotify.FullTrack{
+					SimpleTrack: spotify.SimpleTrack{
+						Artists: []spotify.SimpleArtist{
+							{
+								ExternalURLs: map[string]string{
+									"spotify": "https://open.spotify.com/artist/1Cq0LAHFfvUTBEtMPXUidI",
+								},
+								Endpoint: "https://api.spotify.com/v1/artists/1Cq0LAHFfvUTBEtMPXUidI",
+								ID: "1Cq0LAHFfvUTBEtMPXUidI",
+								Name: "O.A.R.",
+								URI: "spotify:artist:1Cq0LAHFfvUTBEtMPXUidI",
+							},
+						},
+						Endpoint: "https://api.spotify.com/v1/tracks/1l7E6PxXL78DscO7YEDSBc",
+						ID: "1l7E6PxXL78DscO7YEDSBc",
+						Name: "We'll Pick Up Where We Left Off",
+						PreviewURL: "https://p.scdn.co/mp3-preview/e107d8f17f036868d8389de406bae057bb609afa",
+						TrackNumber: 2,
+						URI: "spotify:track:1l7E6PxXL78DscO7YEDSBc",
+					},
+					Popularity: 43,
+				},
+			},
+		},
+	},
+}
+
+func TestService_Playlist(t *testing.T) {
+	tests := []struct {
+		name     string
+		play     playlister
+		tracks []refind.Track
+		wantPlaylist *spotify.FullPlaylist
+		wantErr  error
+	}{
+		{
+			name: "Valid user with nil error, valid playlist with nil error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: testFullPlaylist,
+			wantErr:      nil,
+		},
+		{
+			name: "Valid user with error, valid playlist with nil error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: testErrNoData,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "No user with nil error, valid playlist with nil error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileEmpty,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr: errDataInvalid,
+		},
+		{
+			name: "No user with error, valid playlist with nil error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileEmpty,
+				userErr: testErrNoData,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "Valid user with nil error, valid playlist with error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: testErrNoData,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr:      testErrNoData,
+		},
+		{
+			name: "Valid user with nil error, no playlist with nil error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileEmpty,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr: errDataInvalid,
+		},
+		{
+			name: "Valid user with nil error, no playlist with error, valid tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileEmpty,
+				playlistErr: testErrNoData,
+				addTracksErr: nil,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "Valid user with nil error, valid playlist with nil error, valid tracks with error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: testErrNoData,
+			},
+			tracks: []refind.Track{
+				{ID: "6qK7CuehGu2DVwL8UgaEhV", Name: "Days - Remastered", Artist: refind.Artist{ID: "0S7Zur2g8YhqlzqtlYStli", Name: "Television"}},
+				{ID: "2kL584Ddb8dVjAbga456kZ", Name: "Bells Bleed & Bloom", Artist: refind.Artist{ID: "4K7elTMrmeEYTE9w1zGP5e", Name: "ef"}},
+				{ID: "6XGLiFTNkatlSjGimT0tGU", Name: "Omens And Portents 1: The Driver", Artist: refind.Artist{ID: "4mTFQE6aiehScgvreB9llC", Name: "Earth"}},
+			},
+			wantPlaylist: nil,
+			wantErr:      testErrNoData,
+		},
+		{
+			name: "Valid user with nil error, valid playlist with nil error, no tracks with nil error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: nil,
+			},
+			tracks: nil,
+			wantPlaylist: nil,
+			wantErr:      errTracksMissing,
+		},
+		{
+			name: "Valid user with nil error, valid playlist with nil error, no tracks with error",
+			play: fakePlaylister{
+				userFile: testFileCurrentUser,
+				userErr: nil,
+				playlistFile: testFileCreatePlaylist,
+				playlistErr: nil,
+				addTracksErr: testErrNoData,
+			},
+			tracks: nil,
+			wantPlaylist: nil,
+			wantErr:      errTracksMissing,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			serv := service{play: test.play}
+
+			got, err := serv.Playlist(test.name, test.tracks)
+			if errors.Cause(err) != test.wantErr {
+				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
+			}
+
+			if !reflect.DeepEqual(got, test.wantPlaylist) {
+				t.Errorf("got: <%v>, want: <%v>", got, test.wantPlaylist)
 			}
 		})
 	}

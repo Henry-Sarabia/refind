@@ -16,6 +16,7 @@ var (
 	errClientNil    = errors.New("client pointer is nil")
 	errDataInvalid  = errors.New("invalid or empty data returned")
 	errSeedsMissing = errors.New("missing seed input")
+	errTracksMissing = errors.New("playlist track list is missing")
 )
 type clienter interface {
 	artister
@@ -145,14 +146,26 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 }
 
 func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
+	if len(list) <= 0 {
+		return nil, errTracksMissing
+	}
+
 	u, err := s.play.CurrentUser()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch user")
 	}
 
+	if u == nil {
+		return nil, errDataInvalid
+	}
+
 	pl, err := s.play.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create playlist")
+	}
+
+	if pl == nil {
+		return nil, errDataInvalid
 	}
 
 	var IDs []spotify.ID
