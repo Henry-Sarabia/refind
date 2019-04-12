@@ -21,7 +21,7 @@ func parseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
 	for len(old) > 0 {
 		sd, err := parseMaxSeeds(old)
 		if err != nil {
-			return nil, errors.Wrap(err, "one or more seeds cannot be parsed")
+			return nil, err
 		}
 		sds = append(sds, sd)
 
@@ -56,6 +56,7 @@ func parseSeed(old refind.Seed, sd *spotify.Seeds) error {
 	if blank.Is(old.ID) {
 		return errSeedID
 	}
+
 	switch old.Category {
 	case refind.TrackSeed:
 		sd.Tracks = append(sd.Tracks, spotify.ID(old.ID))
