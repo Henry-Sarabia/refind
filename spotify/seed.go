@@ -1,11 +1,16 @@
 package spotify
 
 import (
+	"github.com/Henry-Sarabia/blank"
 	"github.com/Henry-Sarabia/refind"
 	"github.com/pkg/errors"
 	"github.com/zmb3/spotify"
 )
 
+var (
+	errSeedBlankID = errors.New("seed has missing or blank ID")
+	errSeedCategory = errors.New("unexpected seed category")
+)
 type Seed struct {
 	spotify.Seeds
 }
@@ -48,6 +53,9 @@ func parseMaxSeeds(old []refind.Seed) (spotify.Seeds, error) {
 }
 
 func parseSeed(old refind.Seed, sd *spotify.Seeds) error {
+	if blank.Is(old.ID) {
+		return errSeedBlankID
+	}
 	switch old.Category {
 	case refind.TrackSeed:
 		sd.Tracks = append(sd.Tracks, spotify.ID(old.ID))
@@ -56,7 +64,7 @@ func parseSeed(old refind.Seed, sd *spotify.Seeds) error {
 	case refind.GenreSeed:
 		sd.Genres = append(sd.Genres, old.ID)
 	default:
-		return errors.New("unexpected Seed Category")
+		return errSeedCategory
 	}
 
 	return nil

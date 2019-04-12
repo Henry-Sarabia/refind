@@ -12,9 +12,11 @@ const (
 	publicPlaylist bool = true
 )
 
-var errNilClient = errors.New("client pointer is nil")
-var errInvalidData = errors.New("invalid or empty data returned")
-
+var (
+	errNilClient = errors.New("client pointer is nil")
+	errInvalidData = errors.New("invalid or empty data returned")
+	errMissingSeeds = errors.New("missing seed input")
+)
 type clienter interface {
 	artister
 	tracker
@@ -113,6 +115,10 @@ func (s *service) RecentTracks() ([]refind.Track, error) {
 }
 
 func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
+	if len(seeds) <= 0 {
+		return nil, errMissingSeeds
+	}
+
 	sds, err := parseSeeds(seeds)
 	if err != nil {
 		return nil, err

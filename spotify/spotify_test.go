@@ -252,7 +252,7 @@ func (f fakeRecommender) GetRecommendations(sds spotify.Seeds, attr *spotify.Tra
 
 	var rec *spotify.Recommendations
 	if err := json.Unmarshal(b, &rec); err != nil {
-		return nil, err
+		return nil, f.err
 	}
 
 	return rec, f.err
@@ -292,7 +292,187 @@ func TestService_Recommendations(t *testing.T) {
 			},
 			wantErr: nil,
 		},
-		// TODO: test cases
+		{
+			name: "Valid data, valid seeds, error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
+				{Category: refind.TrackSeed, ID: "0c6xIDDpzE81m2q797ordA"},
+				{Category: refind.GenreSeed, ID: "classical"},
+				{Category: refind.GenreSeed, ID: "country"},
+			},
+			wantTracks: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "Valid data, no seeds, nil error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: nil,
+			},
+			sds: nil,
+			wantTracks: nil,
+			wantErr: errMissingSeeds,
+		},
+		{
+			name: "Valid data, no seeds, error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: testErrNoData,
+			},
+			sds: nil,
+			wantTracks: nil,
+			wantErr: errMissingSeeds,
+		},
+		{
+			name: "Valid data, invalid seed ID, nil error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: refind.TrackSeed, ID: ""},
+			},
+			wantTracks: nil,
+			wantErr: errSeedBlankID,
+		},
+		{
+			name: "Valid data, invalid seed ID, error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: refind.TrackSeed, ID: ""},
+			},
+			wantTracks: nil,
+			wantErr: errSeedBlankID,
+		},
+		{
+			name: "Valid data, invalid seed category, nil error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: -99, ID: "some_id"},
+			},
+			wantTracks: nil,
+			wantErr: errSeedCategory,
+		},
+		{
+			name: "Valid data, invalid seed category, error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: -99, ID: "some_id"},
+			},
+			wantTracks: nil,
+			wantErr: errSeedCategory,
+		},
+		{
+			name: "No data, valid seeds, nil error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
+				{Category: refind.TrackSeed, ID: "0c6xIDDpzE81m2q797ordA"},
+				{Category: refind.GenreSeed, ID: "classical"},
+				{Category: refind.GenreSeed, ID: "country"},
+			},
+			wantTracks: nil,
+			wantErr: errInvalidData,
+		},
+		{
+			name: "No data, valid seeds, error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
+				{Category: refind.TrackSeed, ID: "0c6xIDDpzE81m2q797ordA"},
+				{Category: refind.GenreSeed, ID: "classical"},
+				{Category: refind.GenreSeed, ID: "country"},
+			},
+			wantTracks: nil,
+			wantErr: testErrNoData,
+		},
+		{
+			name: "No data, no seeds, nil error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: nil,
+			},
+			sds: nil,
+			wantTracks: nil,
+			wantErr: errMissingSeeds,
+		},
+		{
+			name: "No data, no seeds, error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: testErrNoData,
+			},
+			sds: nil,
+			wantTracks: nil,
+			wantErr: errMissingSeeds,
+		},
+		{
+			name: "No data, invalid seed ID, nil error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: refind.TrackSeed, ID: ""},
+			},
+			wantTracks: nil,
+			wantErr: errSeedBlankID,
+		},
+		{
+			name: "No data, invalid seed ID, error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: refind.TrackSeed, ID: ""},
+			},
+			wantTracks: nil,
+			wantErr: errSeedBlankID,
+		},
+		{
+			name: "No data, invalid seed category, nil error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: -99, ID: "some_id"},
+			},
+			wantTracks: nil,
+			wantErr: errSeedCategory,
+		},
+		{
+			name: "No data, invalid seed category, error",
+			recom: fakeRecommender{
+				file: testFileEmpty,
+				err: testErrNoData,
+			},
+			sds: []refind.Seed{
+				{Category: -99, ID: "some_id"},
+			},
+			wantTracks: nil,
+			wantErr: errSeedCategory,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
