@@ -6,9 +6,11 @@ import (
 	"github.com/zmb3/spotify"
 )
 
+var errMissingURI = errors.New("URI is blank")
+
 func Authenticator(URI string) (*spotify.Authenticator, error) {
 	if blank.Is(URI) {
-		return nil, errors.New("URI is blank")
+		return nil, errMissingURI
 	}
 
 	auth := spotify.NewAuthenticator(

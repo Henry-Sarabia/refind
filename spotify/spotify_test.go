@@ -21,6 +21,39 @@ const (
 
 var testErrNoData = errors.New("no data")
 
+func TestAuthenticator(t *testing.T) {
+	tests := []struct {
+		name string
+		uri string
+		wantErr error
+	}{
+		{
+			name: "Valid URI",
+			uri: "some_valid_uri",
+			wantErr: nil,
+		},
+		{
+			name:    "Empty URI",
+			uri:     "",
+			wantErr: errMissingURI,
+		},
+		{
+			name:    "Blank URI",
+			uri:     "     ",
+			wantErr: errMissingURI,
+		},
+		// TODO: test cases
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := Authenticator(test.uri)
+			if errors.Cause(err) != test.wantErr {
+				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
+			}
+		})
+	}
+}
+
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name     string
