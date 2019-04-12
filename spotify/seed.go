@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	errSeedBlankID = errors.New("seed has missing or blank ID")
+	errSeedID       = errors.New("seed has missing or blank ID")
 	errSeedCategory = errors.New("unexpected seed category")
 )
 type Seed struct {
@@ -54,7 +54,7 @@ func parseMaxSeeds(old []refind.Seed) (spotify.Seeds, error) {
 
 func parseSeed(old refind.Seed, sd *spotify.Seeds) error {
 	if blank.Is(old.ID) {
-		return errSeedBlankID
+		return errSeedID
 	}
 	switch old.Category {
 	case refind.TrackSeed:

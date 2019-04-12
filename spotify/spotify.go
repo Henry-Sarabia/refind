@@ -13,9 +13,9 @@ const (
 )
 
 var (
-	errNilClient = errors.New("client pointer is nil")
-	errInvalidData = errors.New("invalid or empty data returned")
-	errMissingSeeds = errors.New("missing seed input")
+	errClientNil    = errors.New("client pointer is nil")
+	errDataInvalid  = errors.New("invalid or empty data returned")
+	errSeedsMissing = errors.New("missing seed input")
 )
 type clienter interface {
 	artister
@@ -57,7 +57,7 @@ type service struct {
 
 func New(c clienter) (*service, error) {
 	if c == nil {
-		return nil, errNilClient
+		return nil, errClientNil
 	}
 	s := &service{
 		art: c,
@@ -77,7 +77,7 @@ func (s *service) TopArtists() ([]refind.Artist, error) {
 	}
 
 	if top == nil {
-		return nil, errInvalidData
+		return nil, errDataInvalid
 	}
 
 	return parseArtists(top.Artists...), nil
@@ -90,7 +90,7 @@ func (s *service) topTracks() ([]refind.Track, error) {
 	}
 
 	if top == nil {
-		return nil, errInvalidData
+		return nil, errDataInvalid
 	}
 
 	return parseFullTracks(top.Tracks...), nil
@@ -103,7 +103,7 @@ func (s *service) RecentTracks() ([]refind.Track, error) {
 	}
 
 	if len(rec) <= 0 {
-		return nil, errInvalidData
+		return nil, errDataInvalid
 	}
 
 	var t []refind.Track
@@ -116,7 +116,7 @@ func (s *service) RecentTracks() ([]refind.Track, error) {
 
 func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 	if len(seeds) <= 0 {
-		return nil, errMissingSeeds
+		return nil, errSeedsMissing
 	}
 
 	sds, err := parseSeeds(seeds)
@@ -134,7 +134,7 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 		}
 
 		if recs == nil {
-			return nil, errInvalidData
+			return nil, errDataInvalid
 		}
 
 		t := parseSimpleTracks(recs.Tracks...)

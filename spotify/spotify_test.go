@@ -30,7 +30,7 @@ func TestNew(t *testing.T) {
 			name:     "Nil client",
 			c:        nil,
 			wantServ: nil,
-			wantErr:  errNilClient,
+			wantErr:  errClientNil,
 		},
 		{
 			name: "Valid client",
@@ -121,7 +121,7 @@ func TestService_TopArtists(t *testing.T) {
 				err:  nil,
 			},
 			wantArts: nil,
-			wantErr:  errInvalidData,
+			wantErr:  errDataInvalid,
 		},
 		{
 			name: "No data, error",
@@ -211,7 +211,7 @@ func TestService_RecentTracks(t *testing.T) {
 				err:  nil,
 			},
 			wantTracks: nil,
-			wantErr: errInvalidData,
+			wantErr:    errDataInvalid,
 		},
 		{
 			name: "No data, error",
@@ -313,9 +313,9 @@ func TestService_Recommendations(t *testing.T) {
 				file: testFileRecommendations,
 				err: nil,
 			},
-			sds: nil,
+			sds:        nil,
 			wantTracks: nil,
-			wantErr: errMissingSeeds,
+			wantErr:    errSeedsMissing,
 		},
 		{
 			name: "Valid data, no seeds, error",
@@ -323,9 +323,9 @@ func TestService_Recommendations(t *testing.T) {
 				file: testFileRecommendations,
 				err: testErrNoData,
 			},
-			sds: nil,
+			sds:        nil,
 			wantTracks: nil,
-			wantErr: errMissingSeeds,
+			wantErr:    errSeedsMissing,
 		},
 		{
 			name: "Valid data, invalid seed ID, nil error",
@@ -337,7 +337,7 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.TrackSeed, ID: ""},
 			},
 			wantTracks: nil,
-			wantErr: errSeedBlankID,
+			wantErr:    errSeedID,
 		},
 		{
 			name: "Valid data, invalid seed ID, error",
@@ -349,7 +349,7 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.TrackSeed, ID: ""},
 			},
 			wantTracks: nil,
-			wantErr: errSeedBlankID,
+			wantErr:    errSeedID,
 		},
 		{
 			name: "Valid data, invalid seed category, nil error",
@@ -388,7 +388,7 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.GenreSeed, ID: "country"},
 			},
 			wantTracks: nil,
-			wantErr: errInvalidData,
+			wantErr:    errDataInvalid,
 		},
 		{
 			name: "No data, valid seeds, error",
@@ -411,9 +411,9 @@ func TestService_Recommendations(t *testing.T) {
 				file: testFileEmpty,
 				err: nil,
 			},
-			sds: nil,
+			sds:        nil,
 			wantTracks: nil,
-			wantErr: errMissingSeeds,
+			wantErr:    errSeedsMissing,
 		},
 		{
 			name: "No data, no seeds, error",
@@ -421,9 +421,9 @@ func TestService_Recommendations(t *testing.T) {
 				file: testFileEmpty,
 				err: testErrNoData,
 			},
-			sds: nil,
+			sds:        nil,
 			wantTracks: nil,
-			wantErr: errMissingSeeds,
+			wantErr:    errSeedsMissing,
 		},
 		{
 			name: "No data, invalid seed ID, nil error",
@@ -435,7 +435,7 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.TrackSeed, ID: ""},
 			},
 			wantTracks: nil,
-			wantErr: errSeedBlankID,
+			wantErr:    errSeedID,
 		},
 		{
 			name: "No data, invalid seed ID, error",
@@ -447,7 +447,7 @@ func TestService_Recommendations(t *testing.T) {
 				{Category: refind.TrackSeed, ID: ""},
 			},
 			wantTracks: nil,
-			wantErr: errSeedBlankID,
+			wantErr:    errSeedID,
 		},
 		{
 			name: "No data, invalid seed category, nil error",
