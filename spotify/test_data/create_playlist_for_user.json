@@ -1,0 +1,72 @@
+{
+  "collaborative": false,
+  "description": null,
+  "external_urls": {
+    "spotify": "http://open.spotify.com/user/someone/playlist/7I6yjOAxMq4qsvzgqxw7aU"
+  },
+  "followers": {
+    "href": null,
+    "total": 0
+  },
+  "href": "https://api.spotify.com/v1/users/someone/playlists/7I6yjOAxMq4qsvzgqxw7aU?fields=fields=href,name,owner(!href,external_urls),tracks.items(added_by.id,track(name,href,album(name,href)))",
+  "id": "7I6yjOAxMq4qsvzgqxw7aU",
+  "images": [
+    {
+      "height": 640,
+      "url": "https://i.scdn.co/image/449156e8f2458c247ea9a668e498c598b159f12f",
+      "width": 640
+    }
+  ],
+  "name": "O.A.R. — The Rockville LP",
+  "owner": {
+    "external_urls": {
+      "spotify": "http://open.spotify.com/user/someone"
+    },
+    "href": "https://api.spotify.com/v1/users/someone",
+    "id": "someone",
+    "type": "user",
+    "uri": "spotify:user:someone"
+  },
+  "public": true,
+  "snapshot_id": "Yo+BthwRfySLE498r55BaKSJNw0/3ZDUzVYBcRxVtMReZ3joqyhIlBoMJKif2OWJ",
+  "tracks": {
+    "items": [
+      {
+        "added_at": "2014-06-10T11:23:19Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "http://open.spotify.com/user/someone"
+          },
+          "href": "https://api.spotify.com/v1/users/someone",
+          "id": "someone",
+          "type": "user",
+          "uri": "spotify:user:someone"
+        },
+        "track": {
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/1Cq0LAHFfvUTBEtMPXUidI"
+              },
+              "href": "https://api.spotify.com/v1/artists/1Cq0LAHFfvUTBEtMPXUidI",
+              "id": "1Cq0LAHFfvUTBEtMPXUidI",
+              "name": "O.A.R.",
+              "type": "artist",
+              "uri": "spotify:artist:1Cq0LAHFfvUTBEtMPXUidI"
+            }
+          ],
+          "href": "https://api.spotify.com/v1/tracks/1l7E6PxXL78DscO7YEDSBc",
+          "id": "1l7E6PxXL78DscO7YEDSBc",
+          "name": "We'll Pick Up Where We Left Off",
+          "popularity": 43,
+          "preview_url": "https://p.scdn.co/mp3-preview/e107d8f17f036868d8389de406bae057bb609afa",
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:1l7E6PxXL78DscO7YEDSBc"
+        }
+      }
+    ]
+  },
+  "type": "playlist",
+  "uri": "spotify:user:someone:playlist:7I6yjOAxMq4qsvzgqxw7aU"
+}

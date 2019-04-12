@@ -1,0 +1,452 @@
+{
+  "items": [
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb"
+      },
+      "followers": {
+        "href": null,
+        "total": 2777894
+      },
+      "genres": [
+        "alternative rock",
+        "art rock",
+        "indie rock",
+        "melancholia",
+        "modern rock",
+        "permanent wave",
+        "rock"
+      ],
+      "href": "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb",
+      "id": "4Z8W4fKeB5YxbusRsdQVPb",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/afcd616e1ef2d2786f47b3b4a8a6aeea24a72adc",
+          "width": 640
+        },
+        {
+          "height": 320,
+          "url": "https://i.scdn.co/image/563754af10b3d9f9f62a3458e699f58c4a02870f",
+          "width": 320
+        },
+        {
+          "height": 160,
+          "url": "https://i.scdn.co/image/4067ea225d8b42fa6951857d3af27dd07d60f3c6",
+          "width": 160
+        }
+      ],
+      "name": "Radiohead",
+      "popularity": 80,
+      "type": "artist",
+      "uri": "spotify:artist:4Z8W4fKeB5YxbusRsdQVPb"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/3yY2gUcIsjMr8hjo51PoJ8"
+      },
+      "followers": {
+        "href": null,
+        "total": 1344165
+      },
+      "genres": [
+        "alternative rock",
+        "art rock",
+        "dance rock",
+        "indie rock",
+        "modern rock",
+        "new wave",
+        "permanent wave",
+        "rock",
+        "uk post-punk"
+      ],
+      "href": "https://api.spotify.com/v1/artists/3yY2gUcIsjMr8hjo51PoJ8",
+      "id": "3yY2gUcIsjMr8hjo51PoJ8",
+      "images": [
+        {
+          "height": 1516,
+          "url": "https://i.scdn.co/image/481b980af463122013e4578c08fb8c5cbfaed1e9",
+          "width": 1000
+        },
+        {
+          "height": 970,
+          "url": "https://i.scdn.co/image/4bf08a9e6eea088b20d4092d1322bbd3f39ff9af",
+          "width": 640
+        },
+        {
+          "height": 303,
+          "url": "https://i.scdn.co/image/bd4c7f5ff2c5c4385604e60c71eac1dd498ddbd9",
+          "width": 200
+        },
+        {
+          "height": 97,
+          "url": "https://i.scdn.co/image/d3a2542f2811b5b01ee3483ec7c193f72a882ea1",
+          "width": 64
+        }
+      ],
+      "name": "The Smiths",
+      "popularity": 74,
+      "type": "artist",
+      "uri": "spotify:artist:3yY2gUcIsjMr8hjo51PoJ8"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/3iTsJGG39nMg9YiolUgLMQ"
+      },
+      "followers": {
+        "href": null,
+        "total": 408163
+      },
+      "genres": [
+        "dance rock",
+        "indie rock",
+        "madchester",
+        "new romantic",
+        "new wave",
+        "permanent wave",
+        "rock"
+      ],
+      "href": "https://api.spotify.com/v1/artists/3iTsJGG39nMg9YiolUgLMQ",
+      "id": "3iTsJGG39nMg9YiolUgLMQ",
+      "images": [
+        {
+          "height": 1173,
+          "url": "https://i.scdn.co/image/cdbc12a6b10dbab32ed73d4979183e95f46ebeb2",
+          "width": 1000
+        },
+        {
+          "height": 750,
+          "url": "https://i.scdn.co/image/75416e947bf832f9181500e2da9ebd5feed53d93",
+          "width": 640
+        },
+        {
+          "height": 235,
+          "url": "https://i.scdn.co/image/7df0fc8e174a1359c868e0f3ae4b5b21554d8e20",
+          "width": 200
+        },
+        {
+          "height": 75,
+          "url": "https://i.scdn.co/image/98ff6d3734980aed9fea853eb439a1ba282c67c9",
+          "width": 64
+        }
+      ],
+      "name": "Morrissey",
+      "popularity": 65,
+      "type": "artist",
+      "uri": "spotify:artist:3iTsJGG39nMg9YiolUgLMQ"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/4BO8wK4OAaFsi6PSzs366S"
+      },
+      "followers": {
+        "href": null,
+        "total": 14167
+      },
+      "genres": [
+        "indie garage rock",
+        "indie psych-pop",
+        "vaporwave"
+      ],
+      "href": "https://api.spotify.com/v1/artists/4BO8wK4OAaFsi6PSzs366S",
+      "id": "4BO8wK4OAaFsi6PSzs366S",
+      "images": [
+        {
+          "height": 667,
+          "url": "https://i.scdn.co/image/0ccb9e3f7eea2098e9132cf667ddcaa3485a34d6",
+          "width": 1000
+        },
+        {
+          "height": 427,
+          "url": "https://i.scdn.co/image/d9eb05a501ab75a50a2565e99aefabf527db8099",
+          "width": 640
+        },
+        {
+          "height": 133,
+          "url": "https://i.scdn.co/image/985de27c45fb2da37426139f33d862135a629267",
+          "width": 199
+        },
+        {
+          "height": 43,
+          "url": "https://i.scdn.co/image/136a47550aef934dd32a52910e617320977d91d4",
+          "width": 64
+        }
+      ],
+      "name": "Ricky Eat Acid",
+      "popularity": 44,
+      "type": "artist",
+      "uri": "spotify:artist:4BO8wK4OAaFsi6PSzs366S"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/4uSftVc3FPWe6RJuMZNEe9"
+      },
+      "followers": {
+        "href": null,
+        "total": 264665
+      },
+      "genres": [
+        "anti-folk",
+        "art pop",
+        "chamber pop",
+        "chicago indie",
+        "folk christmas",
+        "folk-pop",
+        "freak folk",
+        "indie christmas",
+        "indie folk",
+        "indie pop",
+        "indie rock",
+        "lo-fi",
+        "melancholia",
+        "modern rock",
+        "neo-psychedelic",
+        "new americana",
+        "shimmer pop",
+        "singer-songwriter",
+        "stomp and holler"
+      ],
+      "href": "https://api.spotify.com/v1/artists/4uSftVc3FPWe6RJuMZNEe9",
+      "id": "4uSftVc3FPWe6RJuMZNEe9",
+      "images": [
+        {
+          "height": 1000,
+          "url": "https://i.scdn.co/image/55df15aef6f7ca01a9bc2a862252b187bbc7e571",
+          "width": 1000
+        },
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/2f48e31f21aab46c4d0403f7bb041b0d96b2beae",
+          "width": 640
+        },
+        {
+          "height": 200,
+          "url": "https://i.scdn.co/image/4903445cdaaf580728546267f4575705a77dfb7e",
+          "width": 200
+        },
+        {
+          "height": 64,
+          "url": "https://i.scdn.co/image/e255ad94d8d57cd7083328d2ffe466004c8fd58b",
+          "width": 64
+        }
+      ],
+      "name": "Andrew Bird",
+      "popularity": 61,
+      "type": "artist",
+      "uri": "spotify:artist:4uSftVc3FPWe6RJuMZNEe9"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/19I4tYiChJoxEO5EuviXpz"
+      },
+      "followers": {
+        "href": null,
+        "total": 345149
+      },
+      "genres": [
+        "alternative metal",
+        "emo",
+        "modern rock",
+        "nu metal",
+        "pop punk",
+        "post-grunge",
+        "punk",
+        "rap metal",
+        "screamo",
+        "skate punk"
+      ],
+      "href": "https://api.spotify.com/v1/artists/19I4tYiChJoxEO5EuviXpz",
+      "id": "19I4tYiChJoxEO5EuviXpz",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/0d52007dc61774fd0495f7d74a1ae0babcf3da38",
+          "width": 640
+        },
+        {
+          "height": 320,
+          "url": "https://i.scdn.co/image/29b796d8acf912c399a6e409a6b8864a18d0f9a0",
+          "width": 320
+        },
+        {
+          "height": 160,
+          "url": "https://i.scdn.co/image/73cf98a5df499094ccd72d29cc47880adffdf5f1",
+          "width": 160
+        }
+      ],
+      "name": "AFI",
+      "popularity": 65,
+      "type": "artist",
+      "uri": "spotify:artist:19I4tYiChJoxEO5EuviXpz"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/0Y6dVaC9DZtPNH4591M42W"
+      },
+      "followers": {
+        "href": null,
+        "total": 33017
+      },
+      "genres": [
+        "chillwave",
+        "indie dream pop",
+        "indie garage rock",
+        "indie pop",
+        "indie psych-rock",
+        "indietronica",
+        "modern rock",
+        "neo-psychedelic",
+        "noise pop",
+        "preverb",
+        "shimmer pop",
+        "shimmer psych",
+        "vapor soul"
+      ],
+      "href": "https://api.spotify.com/v1/artists/0Y6dVaC9DZtPNH4591M42W",
+      "id": "0Y6dVaC9DZtPNH4591M42W",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/13e14c6278c44bb7df796a875c2b533aad90bbd7",
+          "width": 640
+        },
+        {
+          "height": 300,
+          "url": "https://i.scdn.co/image/aa99890d55ef2405be4024a47f796b4eea28f450",
+          "width": 300
+        },
+        {
+          "height": 64,
+          "url": "https://i.scdn.co/image/6df70b14484269c6160c68707de684aefee63247",
+          "width": 64
+        }
+      ],
+      "name": "TV Girl",
+      "popularity": 56,
+      "type": "artist",
+      "uri": "spotify:artist:0Y6dVaC9DZtPNH4591M42W"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/7bu3H8JO7d0UbMoVzbo70s"
+      },
+      "followers": {
+        "href": null,
+        "total": 1317927
+      },
+      "genres": [
+        "alternative rock",
+        "art rock",
+        "dance rock",
+        "new romantic",
+        "new wave",
+        "permanent wave",
+        "pop rock",
+        "rock"
+      ],
+      "href": "https://api.spotify.com/v1/artists/7bu3H8JO7d0UbMoVzbo70s",
+      "id": "7bu3H8JO7d0UbMoVzbo70s",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/7ca743e822b80133971ccf5c70fcbd77a4f4f508",
+          "width": 640
+        },
+        {
+          "height": 200,
+          "url": "https://i.scdn.co/image/2cb2e14783685fd3d27006891aaaa35fc53cd82d",
+          "width": 200
+        },
+        {
+          "height": 64,
+          "url": "https://i.scdn.co/image/9e1ed6613ac0ef103fbfca3c11ff35fec8d9c6b1",
+          "width": 64
+        }
+      ],
+      "name": "The Cure",
+      "popularity": 74,
+      "type": "artist",
+      "uri": "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/0Q2Tc5yZFJpumLMc7Yz4e4"
+      },
+      "followers": {
+        "href": null,
+        "total": 104021
+      },
+      "genres": [
+        "chillhop"
+      ],
+      "href": "https://api.spotify.com/v1/artists/0Q2Tc5yZFJpumLMc7Yz4e4",
+      "id": "0Q2Tc5yZFJpumLMc7Yz4e4",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/afc1f34ffaddc6d4634f3ee32c5aba85d22136db",
+          "width": 640
+        },
+        {
+          "height": 320,
+          "url": "https://i.scdn.co/image/aa33dc4717daf909f4ae102c75600937ea7d023b",
+          "width": 320
+        },
+        {
+          "height": 160,
+          "url": "https://i.scdn.co/image/c11300645f8ae6e95477b5a2db833dcee154d0b2",
+          "width": 160
+        }
+      ],
+      "name": "Tomppabeats",
+      "popularity": 69,
+      "type": "artist",
+      "uri": "spotify:artist:0Q2Tc5yZFJpumLMc7Yz4e4"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/19zqV9DV3txjMUjHvltl2D"
+      },
+      "followers": {
+        "href": null,
+        "total": 148551
+      },
+      "genres": [
+        "emo",
+        "modern rock",
+        "pop punk",
+        "pop rock",
+        "screamo"
+      ],
+      "href": "https://api.spotify.com/v1/artists/19zqV9DV3txjMUjHvltl2D",
+      "id": "19zqV9DV3txjMUjHvltl2D",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/2c52ae453b38814926b6f276e4f0207eb0657366",
+          "width": 640
+        },
+        {
+          "height": 320,
+          "url": "https://i.scdn.co/image/ac55e0dec6dd5b3a509a498742fe57d0e2a81f93",
+          "width": 320
+        },
+        {
+          "height": 160,
+          "url": "https://i.scdn.co/image/c1a713c3e6e5445b6f6e141f0f1e0e0fa0419f97",
+          "width": 160
+        }
+      ],
+      "name": "Motion City Soundtrack",
+      "popularity": 59,
+      "type": "artist",
+      "uri": "spotify:artist:19zqV9DV3txjMUjHvltl2D"
+    }
+  ],
+  "total": 10,
+  "limit": 10,
+  "offset": 0,
+  "href": "https://api.spotify.com/v1/me/top/artists?limit=10&offset=0&time_range=long_term",
+  "previous": null,
+  "next": null
+}

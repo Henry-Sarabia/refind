@@ -1,0 +1,25 @@
+{
+  "birthdate": "1993-12-15",
+  "country": "US",
+  "display_name": "Someone",
+  "email": "email@example.com",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/someone"
+  },
+  "followers" : {
+    "href" : null,
+    "total" : 3829
+  },
+  "href": "https://api.spotify.com/v1/users/someone",
+  "id": "someone",
+  "images": [
+    {
+      "height": null,
+      "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg",
+      "width": null
+    }
+  ],
+  "product": "premium",
+  "type": "user",
+  "uri": "spotify:user:someone"
+}
