@@ -11,9 +11,6 @@ var (
 	errSeedID       = errors.New("seed has missing or blank ID")
 	errSeedCategory = errors.New("unexpected seed category")
 )
-type Seed struct {
-	spotify.Seeds
-}
 
 func parseSeeds(old []refind.Seed) ([]spotify.Seeds, error) {
 	var sds []spotify.Seeds
