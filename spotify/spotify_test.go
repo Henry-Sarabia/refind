@@ -11,9 +11,10 @@ import (
 )
 
 const (
-	testEmptyFile        string = "test_data/empty.json"
-	testTopArtistFile    string = "test_data/current_users_top_artists.json"
-	testRecentTracksFile string = "test_data/player_recently_played.json"
+	testFileEmpty        string = "test_data/empty.json"
+	testFileTopArtists   string = "test_data/current_users_top_artists.json"
+	testFileRecentTracks string = "test_data/player_recently_played.json"
+	testFileRecommendations string = "test_data/get_recommendations.json"
 )
 
 var testErrNoData = errors.New("no data")
@@ -87,7 +88,7 @@ func TestService_TopArtists(t *testing.T) {
 		{
 			name: "Valid data, nil error",
 			art: fakeArtister{
-				file: testTopArtistFile,
+				file: testFileTopArtists,
 				err:  nil,
 			},
 			wantArts: []refind.Artist{
@@ -107,7 +108,7 @@ func TestService_TopArtists(t *testing.T) {
 		{
 			name: "Valid data, error",
 			art: fakeArtister{
-				file: testTopArtistFile,
+				file: testFileTopArtists,
 				err:  testErrNoData,
 			},
 			wantArts: nil,
@@ -116,7 +117,7 @@ func TestService_TopArtists(t *testing.T) {
 		{
 			name: "No data, nil error",
 			art: fakeArtister{
-				file: testEmptyFile,
+				file: testFileEmpty,
 				err:  nil,
 			},
 			wantArts: nil,
@@ -125,7 +126,7 @@ func TestService_TopArtists(t *testing.T) {
 		{
 			name: "No data, error",
 			art: fakeArtister{
-				file: testEmptyFile,
+				file: testFileEmpty,
 				err:  testErrNoData,
 			},
 			wantArts: nil,
@@ -177,7 +178,7 @@ func TestService_RecentTracks(t *testing.T) {
 		{
 			name: "Valid data, nil error",
 			rec: fakeRecenter{
-				file: testRecentTracksFile,
+				file: testFileRecentTracks,
 				err:  nil,
 			},
 			wantTracks: []refind.Track{
@@ -197,8 +198,8 @@ func TestService_RecentTracks(t *testing.T) {
 		{
 			name: "Valid data, error",
 			rec: fakeRecenter{
-				file: testRecentTracksFile,
-				err: testErrNoData,
+				file: testFileRecentTracks,
+				err:  testErrNoData,
 			},
 			wantTracks: nil,
 			wantErr: testErrNoData,
@@ -206,8 +207,8 @@ func TestService_RecentTracks(t *testing.T) {
 		{
 			name: "No data, nil error",
 			rec: fakeRecenter{
-				file: testEmptyFile,
-				err: nil,
+				file: testFileEmpty,
+				err:  nil,
 			},
 			wantTracks: nil,
 			wantErr: errInvalidData,
@@ -215,19 +216,89 @@ func TestService_RecentTracks(t *testing.T) {
 		{
 			name: "No data, error",
 			rec: fakeRecenter{
-				file: testEmptyFile,
-				err: testErrNoData,
+				file: testFileEmpty,
+				err:  testErrNoData,
 			},
 			wantTracks: nil,
 			wantErr: testErrNoData,
 		},
-		// TODO: test cases
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			serv := service{rec: test.rec}
 
 			got, err := serv.RecentTracks()
+			if errors.Cause(err) != test.wantErr {
+				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
+			}
+
+			if !reflect.DeepEqual(got, test.wantTracks) {
+				t.Errorf("\ngot:  <%v>, \nwant: <%v>", got, test.wantTracks)
+			}
+		})
+	}
+}
+
+type fakeRecommender struct {
+	file string
+	err error
+}
+
+func (f fakeRecommender) GetRecommendations(sds spotify.Seeds, attr *spotify.TrackAttributes, opt *spotify.Options) (*spotify.Recommendations, error) {
+	b, err := ioutil.ReadFile(f.file)
+	if err != nil {
+		return nil, err
+	}
+
+	var rec *spotify.Recommendations
+	if err := json.Unmarshal(b, &rec); err != nil {
+		return nil, err
+	}
+
+	return rec, f.err
+}
+
+func TestService_Recommendations(t *testing.T) {
+	tests := []struct {
+		name string
+		recom recommender
+		sds []refind.Seed
+		wantTracks []refind.Track
+		wantErr error
+	}{
+		{
+			name: "Valid data, valid seeds, nil error",
+			recom: fakeRecommender{
+				file: testFileRecommendations,
+				err: nil,
+			},
+			sds: []refind.Seed{
+				{Category: refind.ArtistSeed, ID: "4NHQUGzhtTLFvgF5SZesLK"},
+				{Category: refind.TrackSeed, ID: "0c6xIDDpzE81m2q797ordA"},
+				{Category: refind.GenreSeed, ID: "classical"},
+				{Category: refind.GenreSeed, ID: "country"},
+			},
+			wantTracks: []refind.Track{
+				{ID: "7cgi6lRggiLAAzsuJOBBeW", Name: "Innsbruck, ich muß dich lassen", Artist: refind.Artist{ID: "1G6jUCigH2z7oGk7jm6OhS", Name: "Heinrich Isaac"}},
+				{ID: "0T02WlrUAK45ApAVVixmcc", Name: "La Bohème / Act 1: \"Che gelida manina\"", Artist: refind.Artist{ID: "0OzxPXyowUEQ532c9AmHUR", Name: "Giacomo Puccini"}},
+				{ID: "0GaVkII433PqC4EkMSjWEV", Name: "Moments - Seeb Remix", Artist: refind.Artist{ID: "4NHQUGzhtTLFvgF5SZesLK", Name: "Tove Lo"}},
+				{ID: "1H9rGpQ1Xqh45Y13mzfJvU", Name: "Clarinet Concerto in B-Flat Major (reconstructed R. Meylan): I. Andante sostenuto", Artist: refind.Artist{ID: "2jCGEMSZXMSOImpD8sqo56", Name: "Gaetano Donizetti"}},
+				{ID: "4BNUJM7oEYNPtXDzvZjcRQ", Name: "The Scene", Artist: refind.Artist{ID: "4FJPplt1JOVw8Q7NiwFmLv", Name: "Friend Within"}},
+				{ID: "3lO38SiB2WAQRqTAHN7WTC", Name: "Borderline - Vanic Remix", Artist: refind.Artist{ID: "2QSPrJfYeRXaltEEiriXN9", Name: "Tove Styrke"}},
+				{ID: "6zzZPhrTwS84pOkuqCwI5B", Name: "I Didn’t Just Come Here To Dance", Artist: refind.Artist{ID: "6sFIWsNpZYqfjUpaCgueju", Name: "Carly Rae Jepsen"}},
+				{ID: "4dGJf1SER1T6ooX46vwzRB", Name: "Chicken Fried", Artist: refind.Artist{ID: "6yJCxee7QumYr820xdIsjo", Name: "Zac Brown Band"}},
+				{ID: "25I4pBnup7EeerWd61G61i", Name: "Timebomb", Artist: refind.Artist{ID: "4NHQUGzhtTLFvgF5SZesLK", Name: "Tove Lo"}},
+				{ID: "2URjwQulkDiDmFdjSPrcSc", Name: "Appalachian Spring: Moderato - Coda", Artist: refind.Artist{ID: "0nJvyjVTb8sAULPYyA1bqU", Name: "Aaron Copland"}},
+			},
+			wantErr: nil,
+		},
+		// TODO: test cases
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			serv := service{recom: test.recom}
+
+			got, err := serv.Recommendations(test.sds)
 			if errors.Cause(err) != test.wantErr {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
