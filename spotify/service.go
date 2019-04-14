@@ -10,6 +10,10 @@ const (
 	popTarget      int  = 40
 	popMax         int  = 50
 	publicPlaylist bool = true
+	limitMax = 50
+	timeShort = "short"
+	timeMed = "medium"
+	timeLong = "long"
 )
 
 var (
@@ -27,7 +31,7 @@ type clienter interface {
 }
 
 type artister interface {
-	CurrentUsersTopArtists() (*spotify.FullArtistPage, error)
+	CurrentUsersTopArtistsOpt(*spotify.Options) (*spotify.FullArtistPage, error)
 }
 
 type tracker interface {
@@ -72,7 +76,36 @@ func New(c clienter) (*service, error) {
 }
 
 func (s *service) TopArtists() ([]refind.Artist, error) {
-	top, err := s.art.CurrentUsersTopArtists()
+	var top []refind.Artist
+
+	short, err := s.topArtists(limitMax, timeShort)
+	if err != nil {
+		return nil, err
+	}
+	top = append(top, short...)
+
+	med, err := s.topArtists(limitMax, timeMed)
+	if err != nil {
+		return nil, err
+	}
+	top = append(top, med...)
+
+	long, err := s.topArtists(limitMax, timeLong)
+	if err != nil {
+		return nil, err
+	}
+	top = append(top, long...)
+
+	return top, nil
+}
+
+func (s *service) topArtists(limit int, time string) ([]refind.Artist, error) {
+	opt := &spotify.Options{
+		Limit: &limit,
+		Timerange: &time,
+	}
+
+	top, err := s.art.CurrentUsersTopArtistsOpt(opt)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
 	}
