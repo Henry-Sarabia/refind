@@ -24,7 +24,6 @@ var (
 )
 type clienter interface {
 	artister
-	tracker
 	recenter
 	recommender
 	playlister
@@ -32,10 +31,6 @@ type clienter interface {
 
 type artister interface {
 	CurrentUsersTopArtistsOpt(*spotify.Options) (*spotify.FullArtistPage, error)
-}
-
-type tracker interface {
-	CurrentUsersTopTracks() (*spotify.FullTrackPage, error)
 }
 
 type recenter interface {
@@ -54,7 +49,6 @@ type playlister interface {
 
 type service struct {
 	art artister
-	track tracker
 	rec recenter
 	recom recommender
 	play playlister
@@ -66,7 +60,6 @@ func New(c clienter) (*service, error) {
 	}
 	s := &service{
 		art: c,
-		track: c,
 		rec: c,
 		recom: c,
 		play: c,
@@ -115,19 +108,6 @@ func (s *service) topArtists(limit int, time string) ([]refind.Artist, error) {
 	}
 
 	return parseArtists(top.Artists...), nil
-}
-
-func (s *service) topTracks() ([]refind.Track, error) {
-	top, err := s.track.CurrentUsersTopTracks()
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot fetch top tracks")
-	}
-
-	if top == nil {
-		return nil, errDataInvalid
-	}
-
-	return parseFullTracks(top.Tracks...), nil
 }
 
 func (s *service) RecentTracks() ([]refind.Track, error) {

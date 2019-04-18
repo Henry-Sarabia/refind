@@ -72,7 +72,6 @@ func TestNew(t *testing.T) {
 			c:    &spotify.Client{},
 			wantServ: &service{
 				art:   &spotify.Client{},
-				track: &spotify.Client{},
 				rec:   &spotify.Client{},
 				recom: &spotify.Client{},
 				play:  &spotify.Client{},
