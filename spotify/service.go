@@ -34,7 +34,7 @@ type artister interface {
 }
 
 type recenter interface {
-	PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error)
+	PlayerRecentlyPlayedOpt(*spotify.RecentlyPlayedOptions) ([]spotify.RecentlyPlayedItem, error)
 }
 
 type recommender interface {
@@ -111,7 +111,11 @@ func (s *service) topArtists(limit int, time string) ([]refind.Artist, error) {
 }
 
 func (s *service) RecentTracks() ([]refind.Track, error) {
-	rec, err := s.rec.PlayerRecentlyPlayed()
+	opt := &spotify.RecentlyPlayedOptions{
+		Limit: limitMax,
+	}
+
+	rec, err := s.rec.PlayerRecentlyPlayedOpt(opt)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recently played tracks")
 	}

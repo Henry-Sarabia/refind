@@ -208,7 +208,7 @@ type fakeRecenter struct {
 	err  error
 }
 
-func (f fakeRecenter) PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error) {
+func (f fakeRecenter) PlayerRecentlyPlayedOpt(opt *spotify.RecentlyPlayedOptions) ([]spotify.RecentlyPlayedItem, error) {
 	b, err := ioutil.ReadFile(f.file)
 	if err != nil {
 		return nil, err
