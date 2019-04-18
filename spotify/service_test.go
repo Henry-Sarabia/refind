@@ -72,7 +72,6 @@ func TestNew(t *testing.T) {
 			c:    &spotify.Client{},
 			wantServ: &service{
 				art:   &spotify.Client{},
-				track: &spotify.Client{},
 				rec:   &spotify.Client{},
 				recom: &spotify.Client{},
 				play:  &spotify.Client{},
@@ -99,7 +98,7 @@ type fakeArtister struct {
 	err  error
 }
 
-func (f fakeArtister) CurrentUsersTopArtists() (*spotify.FullArtistPage, error) {
+func (f fakeArtister) CurrentUsersTopArtistsOpt(opt *spotify.Options) (*spotify.FullArtistPage, error) {
 	b, err := ioutil.ReadFile(f.file)
 	if err != nil {
 		return nil, err
@@ -127,6 +126,26 @@ func TestService_TopArtists(t *testing.T) {
 				err:  nil,
 			},
 			wantArts: []refind.Artist{
+				{ID: "4Z8W4fKeB5YxbusRsdQVPb", Name: "Radiohead"},
+				{ID: "3yY2gUcIsjMr8hjo51PoJ8", Name: "The Smiths"},
+				{ID: "3iTsJGG39nMg9YiolUgLMQ", Name: "Morrissey"},
+				{ID: "4BO8wK4OAaFsi6PSzs366S", Name: "Ricky Eat Acid"},
+				{ID: "4uSftVc3FPWe6RJuMZNEe9", Name: "Andrew Bird"},
+				{ID: "19I4tYiChJoxEO5EuviXpz", Name: "AFI"},
+				{ID: "0Y6dVaC9DZtPNH4591M42W", Name: "TV Girl"},
+				{ID: "7bu3H8JO7d0UbMoVzbo70s", Name: "The Cure"},
+				{ID: "0Q2Tc5yZFJpumLMc7Yz4e4", Name: "Tomppabeats"},
+				{ID: "19zqV9DV3txjMUjHvltl2D", Name: "Motion City Soundtrack"},
+				{ID: "4Z8W4fKeB5YxbusRsdQVPb", Name: "Radiohead"},
+				{ID: "3yY2gUcIsjMr8hjo51PoJ8", Name: "The Smiths"},
+				{ID: "3iTsJGG39nMg9YiolUgLMQ", Name: "Morrissey"},
+				{ID: "4BO8wK4OAaFsi6PSzs366S", Name: "Ricky Eat Acid"},
+				{ID: "4uSftVc3FPWe6RJuMZNEe9", Name: "Andrew Bird"},
+				{ID: "19I4tYiChJoxEO5EuviXpz", Name: "AFI"},
+				{ID: "0Y6dVaC9DZtPNH4591M42W", Name: "TV Girl"},
+				{ID: "7bu3H8JO7d0UbMoVzbo70s", Name: "The Cure"},
+				{ID: "0Q2Tc5yZFJpumLMc7Yz4e4", Name: "Tomppabeats"},
+				{ID: "19zqV9DV3txjMUjHvltl2D", Name: "Motion City Soundtrack"},
 				{ID: "4Z8W4fKeB5YxbusRsdQVPb", Name: "Radiohead"},
 				{ID: "3yY2gUcIsjMr8hjo51PoJ8", Name: "The Smiths"},
 				{ID: "3iTsJGG39nMg9YiolUgLMQ", Name: "Morrissey"},
@@ -189,7 +208,7 @@ type fakeRecenter struct {
 	err  error
 }
 
-func (f fakeRecenter) PlayerRecentlyPlayed() ([]spotify.RecentlyPlayedItem, error) {
+func (f fakeRecenter) PlayerRecentlyPlayedOpt(opt *spotify.RecentlyPlayedOptions) ([]spotify.RecentlyPlayedItem, error) {
 	b, err := ioutil.ReadFile(f.file)
 	if err != nil {
 		return nil, err

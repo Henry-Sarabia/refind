@@ -39,13 +39,3 @@ func parseSimpleTracks(prev ...spotify.SimpleTrack) []refind.Track {
 
 	return curr
 }
-
-func parseFullTracks(prev ...spotify.FullTrack) []refind.Track {
-	var curr []refind.Track
-
-	for _, p := range prev {
-		curr = append(curr, parseTrack(p.SimpleTrack))
-	}
-
-	return curr
-}
