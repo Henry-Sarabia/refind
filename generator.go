@@ -4,7 +4,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-var errNilGen = errors.New("cannot initialize new generator using nil interface")
+var (
+	errNilGen       = errors.New("cannot initialize new generator using nil interface")
+	errRangeInvalid = errors.New("integer parameter is out of range")
+)
 
 type generator struct {
 	serv MusicService
@@ -25,10 +28,14 @@ type MusicService interface {
 }
 
 type Recommender interface {
-	Recommendations([]Seed) ([]Track, error)
+	Recommendations(int, []Seed) ([]Track, error)
 }
 
-func (g generator) Tracklist() ([]Track, error) {
+func (g generator) Tracklist(n int) ([]Track, error) {
+	if n <= 0 {
+		return nil, errRangeInvalid
+	}
+
 	tracks, err := g.serv.RecentTracks()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recent tracks")
@@ -43,7 +50,7 @@ func (g generator) Tracklist() ([]Track, error) {
 		sds = append(sds, sd)
 	}
 
-	recs, err := g.rec.Recommendations(sds)
+	recs, err := g.rec.Recommendations(n, sds)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}
@@ -58,7 +65,11 @@ func (g generator) Tracklist() ([]Track, error) {
 	return f, nil
 }
 
-func (g generator) LimitedTracklist() ([]Track, error) {
+func (g generator) LimitedTracklist(n int) ([]Track, error) {
+	if n <= 0 {
+		return nil, errRangeInvalid
+	}
+
 	top, err := g.serv.TopArtists()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch top artists")
@@ -73,7 +84,7 @@ func (g generator) LimitedTracklist() ([]Track, error) {
 		sds = append(sds, sd)
 	}
 
-	recs, err := g.rec.Recommendations(sds)
+	recs, err := g.rec.Recommendations(n, sds)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot fetch recommendations")
 	}

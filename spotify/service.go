@@ -7,21 +7,23 @@ import (
 )
 
 const (
-	popTarget      int  = 40
-	popMax         int  = 50
-	publicPlaylist bool = true
-	limitMax = 50
-	timeShort = "short"
-	timeMed = "medium"
-	timeLong = "long"
+	popTarget      int    = 40
+	popMax         int    = 50
+	publicPlaylist bool   = true
+	fetchMax       int    = 50
+	timeShort      string = "short"
+	timeMed        string = "medium"
+	timeLong       string = "long"
 )
 
 var (
-	errClientNil    = errors.New("client pointer is nil")
-	errDataInvalid  = errors.New("invalid or empty data returned")
-	errSeedsMissing = errors.New("missing seed input")
+	errClientNil     = errors.New("client pointer is nil")
+	errDataInvalid   = errors.New("invalid or empty data returned")
+	errSeedsMissing  = errors.New("missing seed input")
 	errTracksMissing = errors.New("playlist track list is missing")
+	errRangeInvalid  = errors.New("integer parameter is out of range")
 )
+
 type clienter interface {
 	artister
 	recenter
@@ -48,10 +50,10 @@ type playlister interface {
 }
 
 type service struct {
-	art artister
-	rec recenter
+	art   artister
+	rec   recenter
 	recom recommender
-	play playlister
+	play  playlister
 }
 
 func New(c clienter) (*service, error) {
@@ -59,10 +61,10 @@ func New(c clienter) (*service, error) {
 		return nil, errClientNil
 	}
 	s := &service{
-		art: c,
-		rec: c,
+		art:   c,
+		rec:   c,
 		recom: c,
-		play: c,
+		play:  c,
 	}
 
 	return s, nil
@@ -71,19 +73,19 @@ func New(c clienter) (*service, error) {
 func (s *service) TopArtists() ([]refind.Artist, error) {
 	var top []refind.Artist
 
-	short, err := s.topArtists(limitMax, timeShort)
+	short, err := s.topArtists(fetchMax, timeShort)
 	if err != nil {
 		return nil, err
 	}
 	top = append(top, short...)
 
-	med, err := s.topArtists(limitMax, timeMed)
+	med, err := s.topArtists(fetchMax, timeMed)
 	if err != nil {
 		return nil, err
 	}
 	top = append(top, med...)
 
-	long, err := s.topArtists(limitMax, timeLong)
+	long, err := s.topArtists(fetchMax, timeLong)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +96,7 @@ func (s *service) TopArtists() ([]refind.Artist, error) {
 
 func (s *service) topArtists(limit int, time string) ([]refind.Artist, error) {
 	opt := &spotify.Options{
-		Limit: &limit,
+		Limit:     &limit,
 		Timerange: &time,
 	}
 
@@ -112,7 +114,7 @@ func (s *service) topArtists(limit int, time string) ([]refind.Artist, error) {
 
 func (s *service) RecentTracks() ([]refind.Track, error) {
 	opt := &spotify.RecentlyPlayedOptions{
-		Limit: limitMax,
+		Limit: fetchMax,
 	}
 
 	rec, err := s.rec.PlayerRecentlyPlayedOpt(opt)
@@ -132,9 +134,13 @@ func (s *service) RecentTracks() ([]refind.Track, error) {
 	return t, nil
 }
 
-func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
+func (s *service) Recommendations(total int, seeds []refind.Seed) ([]refind.Track, error) {
 	if len(seeds) <= 0 {
 		return nil, errSeedsMissing
+	}
+
+	if total <= 0 {
+		return nil, errRangeInvalid
 	}
 
 	sds, err := parseSeeds(seeds)
@@ -142,24 +148,44 @@ func (s *service) Recommendations(seeds []refind.Seed) ([]refind.Track, error) {
 		return nil, err
 	}
 
-	var tracks []refind.Track
-	attr := spotify.NewTrackAttributes().TargetPopularity(popTarget).MaxPopularity(popMax)
+	var list []refind.Track
+	n := total / len(sds)
 
 	for _, sd := range sds {
-		recs, err := s.recom.GetRecommendations(sd, attr, nil)
+		recs, err := s.recommendation(n, sd)
 		if err != nil {
-			return nil, errors.Wrap(err, "cannot fetch recommendations")
+			return nil, err
 		}
 
-		if recs == nil {
-			return nil, errDataInvalid
-		}
-
-		t := parseSimpleTracks(recs.Tracks...)
-		tracks = append(tracks, t...)
+		list = append(list, recs...)
 	}
 
-	return tracks, nil
+	return list, nil
+}
+
+func (s *service) recommendation(n int, sd spotify.Seeds) ([]refind.Track, error) {
+	if n <= 0 {
+		return nil, errRangeInvalid
+	}
+
+	opt := &spotify.Options{
+		Limit: &n,
+	}
+
+	attr := spotify.NewTrackAttributes().TargetPopularity(popTarget).MaxPopularity(popMax)
+
+	recs, err := s.recom.GetRecommendations(sd, attr, opt)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot fetch recommendations")
+	}
+
+	if recs == nil {
+		return nil, errDataInvalid
+	}
+
+	t := parseSimpleTracks(recs.Tracks...)
+
+	return t, nil
 }
 
 func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
