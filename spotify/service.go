@@ -164,10 +164,6 @@ func (s *service) Recommendations(total int, seeds []refind.Seed) ([]refind.Trac
 }
 
 func (s *service) recommendation(n int, sd spotify.Seeds) ([]refind.Track, error) {
-	if n <= 0 {
-		return nil, errRangeInvalid
-	}
-
 	opt := &spotify.Options{
 		Limit: &n,
 	}
