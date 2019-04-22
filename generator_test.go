@@ -12,6 +12,8 @@ var (
 	testErrFetchRecommendations = errors.New("cannot fetch recommendation tracks")
 )
 
+const testTotal int = 30
+
 type fakeMusicService struct {
 	artists []Artist
 	artistErr error
@@ -32,7 +34,7 @@ type fakeRecommender struct{
 	err error
 }
 
-func (f fakeRecommender) Recommendations([]Seed) ([]Track, error) {
+func (f fakeRecommender) Recommendations(int, []Seed) ([]Track, error) {
 	return f.tracks, f.err
 }
 
@@ -87,10 +89,11 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestGenerator_FromTracks(t *testing.T) {
+func TestGenerator_Tracklist(t *testing.T) {
 	tests := []struct {
 		name string
 		gen generator
+		total int
 		wantList []Track
 		wantErr error
 	}{
@@ -115,6 +118,7 @@ func TestGenerator_FromTracks(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			[]Track{
 				{ID: "21", Name: "qux"},
 			},
@@ -136,6 +140,7 @@ func TestGenerator_FromTracks(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			nil,
 			testErrFetchArtists,
 		},
@@ -156,6 +161,7 @@ func TestGenerator_FromTracks(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			nil,
 			testErrFetchTracks,
 		},
@@ -178,6 +184,7 @@ func TestGenerator_FromTracks(t *testing.T) {
 					err: testErrFetchRecommendations,
 				},
 			},
+			testTotal,
 			nil,
 			testErrFetchRecommendations,
 		},
@@ -200,13 +207,39 @@ func TestGenerator_FromTracks(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			nil,
 			errTrackSeed,
+		},
+		{
+			"n out of range",
+			generator{
+				serv: fakeMusicService{
+					artists: []Artist{
+						{ID: "0", Name: "foo"},
+						{ID: "1", Name: "bar"},
+					},
+					artistErr: nil,
+					tracks: []Track {
+						{ID: "10", Name: "baz", Artist: Artist{ID: "0", Name: "foo"}},
+					},
+					trackErr: nil,
+				},
+				rec: fakeRecommender{
+					tracks: []Track {
+						{ID: "21", Name: "qux"},
+					},
+					err: nil,
+				},
+			},
+			0,
+			nil,
+			errRangeInvalid,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.Tracklist()
+			list, err := test.gen.Tracklist(test.total)
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
@@ -301,7 +334,7 @@ func TestGenerator_FromArtists(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.LimitedTracklist()
+			list, err := test.gen.LimitedTracklist(99)
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
