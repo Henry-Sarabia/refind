@@ -120,6 +120,7 @@ func filter(prev []Track, rmv map[string]Artist) []Track {
 	for _, p := range prev {
 		if _, ok := rmv[p.Artist.Name]; !ok {
 			curr = append(curr, p)
+			rmv[p.Artist.Name] = p.Artist
 		}
 	}
 
