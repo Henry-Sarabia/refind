@@ -353,12 +353,12 @@ func TestGenerator_LimitedTracklist(t *testing.T) {
 			},
 			0,
 			nil,
-			nil,
+			errRangeInvalid,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			list, err := test.gen.LimitedTracklist(99)
+			list, err := test.gen.LimitedTracklist(test.total)
 			if !reflect.DeepEqual(errors.Cause(err), test.wantErr) {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
