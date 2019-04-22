@@ -479,9 +479,7 @@ func TestFilter(t *testing.T) {
 			},
 			[]Track{
 				{ID: "1", Name: "foo", Artist: Artist{ID: "11", Name: "grault"}},
-				{ID: "3", Name: "baz", Artist: Artist{ID: "11", Name: "grault"}},
 				{ID: "4", Name: "qux", Artist: Artist{ID: "14", Name: "fred"}},
-				{ID: "5", Name: "quux", Artist: Artist{ID: "14", Name: "fred"}},
 			},
 		},
 		{
