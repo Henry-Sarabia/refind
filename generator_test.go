@@ -251,10 +251,11 @@ func TestGenerator_Tracklist(t *testing.T) {
 	}
 }
 
-func TestGenerator_FromArtists(t *testing.T) {
+func TestGenerator_LimitedTracklist(t *testing.T) {
 	tests := []struct {
 		name string
 		gen generator
+		total int
 		wantList []Track
 		wantErr error
 	}{
@@ -275,6 +276,7 @@ func TestGenerator_FromArtists(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			[]Track{
 				{ID: "10", Name: "qux"},
 			},
@@ -292,6 +294,7 @@ func TestGenerator_FromArtists(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			nil,
 			testErrFetchArtists,
 		},
@@ -310,6 +313,7 @@ func TestGenerator_FromArtists(t *testing.T) {
 					err: testErrFetchRecommendations,
 				},
 			},
+			testTotal,
 			nil,
 			testErrFetchRecommendations,
 		},
@@ -328,8 +332,28 @@ func TestGenerator_FromArtists(t *testing.T) {
 					err: nil,
 				},
 			},
+			testTotal,
 			nil,
 			errArtistSeed,
+		},
+		{
+			"n out of range",
+			generator{
+				serv: fakeMusicService{
+					artists: []Artist{
+						{ID: "0", Name: "foo"},
+						{ID: "1", Name: "bar"},
+					},
+					artistErr: nil,
+				},
+				rec: fakeRecommender{
+					tracks: nil,
+					err: nil,
+				},
+			},
+			0,
+			nil,
+			nil,
 		},
 	}
 	for _, test := range tests {
