@@ -184,7 +184,7 @@ func (s *service) recommendation(n int, sd spotify.Seeds) ([]refind.Track, error
 	return t, nil
 }
 
-func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlaylist, error) {
+func (s *service) Playlist(name string, info string, list []refind.Track) (*spotify.FullPlaylist, error) {
 	if len(list) <= 0 {
 		return nil, errTracksMissing
 	}
@@ -198,7 +198,7 @@ func (s *service) Playlist(name string, list []refind.Track) (*spotify.FullPlayl
 		return nil, errDataInvalid
 	}
 
-	pl, err := s.play.CreatePlaylistForUser(u.ID, name, "description", publicPlaylist)
+	pl, err := s.play.CreatePlaylistForUser(u.ID, name, info, publicPlaylist)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create playlist")
 	}
