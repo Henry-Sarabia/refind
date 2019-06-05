@@ -874,7 +874,7 @@ func TestService_Playlist(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			serv := service{play: test.play}
 
-			got, err := serv.Playlist(test.name, test.tracks)
+			got, err := serv.Playlist(test.name, "info", test.tracks)
 			if errors.Cause(err) != test.wantErr {
 				t.Errorf("got: <%v>, want: <%v>", errors.Cause(err), test.wantErr)
 			}
